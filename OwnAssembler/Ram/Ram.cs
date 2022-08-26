@@ -2,14 +2,14 @@
 
 public static class Ram
 {
-    private static readonly Dictionary<string, int> RamDictionary = new();
+    private static readonly Dictionary<string, object?> RamDictionary = new();
 
-    public static int Read(string address)
+    public static object? Read(string address)
     {
         return RamDictionary[address];
     }
 
-    public static void Write(string address, int value)
+    public static void Write(string address, object? value)
     {
         RamDictionary[address] = value;
     }

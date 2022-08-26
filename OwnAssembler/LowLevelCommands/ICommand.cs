@@ -2,6 +2,6 @@
 
 public interface ICommand
 {
-    void Execute(int[] registers, ref int currentCommandIndex);
+    void Execute(EditedStack stack, ref int currentCommandIndex);
     void Dump();
 }

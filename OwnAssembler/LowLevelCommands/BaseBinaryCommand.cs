@@ -2,25 +2,30 @@
 
 public abstract class BaseBinaryCommand : ICommand
 {
-    private readonly int _registerIndexForResult;
     private readonly string _commandName;
 
-    protected BaseBinaryCommand(int registerIndexForResult, string commandName)
+    protected BaseBinaryCommand(string commandName)
     {
-        _registerIndexForResult = registerIndexForResult;
         _commandName = commandName;
     }
 
-    public void Execute(int[] registers, ref int currentCommandIndex)
+    public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        registers[_registerIndexForResult] = ExecuteBinaryCommand(registers[0], registers[1]);
+        var b = stack.Pop();
+        var a = stack.Peek();
+        
+        stack.Push(a);
+        
+        stack.Push(ExecuteBinaryCommand(a, b));
+        
+        
         currentCommandIndex++;
     }
 
     public void Dump()
     {
-        Console.Write($"{_commandName} r{_registerIndexForResult}");
+        Console.Write($"{_commandName}");
     }
 
-    protected abstract int ExecuteBinaryCommand(int leftValue, int rightValue);
+    protected abstract object? ExecuteBinaryCommand(object leftValue, object rightValue);
 }

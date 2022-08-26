@@ -2,16 +2,16 @@
 
 namespace OwnAssembler.HighLevelCommands;
 
-public class ReadKeyCommand : ICommand
+public class ReadLineCommand : ICommand
 {
     public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        stack.Push(Console.ReadKey().KeyChar);
+        stack.Push(Console.ReadLine());
         currentCommandIndex++;
     }
 
     public void Dump()
     {
-        Console.Write("readKey");
+        Console.Write("readLine");
     }
 }

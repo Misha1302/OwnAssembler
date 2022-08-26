@@ -5,24 +5,20 @@ namespace OwnAssembler.Ram;
 public class RamReadCommand : ICommand
 {
     private readonly string _address;
-    private readonly int _registerIndexToSave;
 
-    public RamReadCommand(string address, int registerIndexToSave)
+    public RamReadCommand(string address)
     {
         _address = address;
-        _registerIndexToSave = registerIndexToSave;
     }
 
-    public void Execute(int[] registers, ref int currentCommandIndex)
+    public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        registers[_registerIndexToSave] = Ram.Read(_address);
+        stack.Push(Ram.Read(_address));
         currentCommandIndex++;
     }
 
     public void Dump()
     {
-        Console.Write($"{_registerIndexToSave} = {Ram.Read(_address)}:{_address}");
+        Console.Write($"ram read: a:{_address} v:{Ram.Read(_address)}");
     }
-    
-    
 }

@@ -2,16 +2,16 @@
 
 namespace OwnAssembler.HighLevelCommands;
 
-public class ReadKeyCommand : ICommand
+public class GetTimeInMillisecondsCommand : ICommand
 {
     public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        stack.Push(Console.ReadKey().KeyChar);
+        stack.Push(DateTimeOffset.Now.ToUnixTimeMilliseconds());
         currentCommandIndex++;
     }
 
     public void Dump()
     {
-        Console.Write("readKey");
+        Console.Write("getting time in milliseconds");
     }
 }

@@ -5,20 +5,18 @@ namespace OwnAssembler.HighLevelCommands;
 
 public class OutputCommand : ICommand
 {
-    private readonly int _endIndex;
-    private readonly int _startIndex;
-
-    public OutputCommand(int startIndex = 0, int length = 1)
+    public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        _startIndex = startIndex;
-        _endIndex = startIndex + length;
-    }
+        var length = (int)stack.Pop();
 
-    public void Execute(int[] registers, ref int currentCommandIndex)
-    {
-        var stringBuilder = new StringBuilder(_endIndex - _startIndex);
+        var stringBuilder = new StringBuilder(length);
 
-        for (var i = _startIndex; i < _endIndex; i++) stringBuilder.Append((char)registers[i]);
+        var list = new List<object?>();
+        for (var i = 0; i < length; i++) list.Add(stack.Pop());
+
+        foreach (var obj in list) stack.Push(obj);
+
+        foreach (var item in list.Select(x => x?.ToString()).Reverse()) stringBuilder.Append(item);
 
         Console.Write(stringBuilder.ToString());
         currentCommandIndex++;
@@ -26,6 +24,6 @@ public class OutputCommand : ICommand
 
     public void Dump()
     {
-        Console.Write($"output {_startIndex} {_endIndex - _startIndex}");
+        Console.Write("output");
     }
 }

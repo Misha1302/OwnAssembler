@@ -2,9 +2,9 @@
 
 public class JumpCommand : ICommand
 { 
-    public void Execute(int[] registers, ref int currentCommandIndex)
+    public void Execute(EditedStack stack, ref int currentCommandIndex)
     {
-        currentCommandIndex += registers[0];
+        currentCommandIndex += (int)(stack.Peek() ?? throw new TypeAccessException("Jump only works with int values"));
     }
 
     public void Dump()

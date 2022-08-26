@@ -2,14 +2,20 @@ namespace OwnAssembler;
 
 public class Token
 {
+    public readonly string Text;
     public readonly Kind TokenKind;
-    public readonly int? Value;
-    public readonly bool IsCommand;
+    public readonly object? Value;
 
-    public Token(Kind tokenKind, int? value=null, bool isCommand = false)
+    public Token(Kind tokenKind, string text, object? value = null)
     {
         TokenKind = tokenKind;
-        IsCommand = isCommand;
+        Text = text;
+        Value = value;
+    }
+    public Token(Kind tokenKind, char text, object? value = null)
+    {
+        TokenKind = tokenKind;
+        Text = text.ToString();
         Value = value;
     }
 }

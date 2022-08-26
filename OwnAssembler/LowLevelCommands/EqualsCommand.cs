@@ -2,14 +2,11 @@
 
 public class EqualsCommand : BaseBinaryCommand
 {
-    private readonly int _registerIndexForResult;
-
-    public EqualsCommand(int registerIndexForResult) : base(registerIndexForResult, "eq")
+    public EqualsCommand() : base("eq")
     {
-        _registerIndexForResult = registerIndexForResult;
     }
 
-    protected override int ExecuteBinaryCommand(int leftValue, int rightValue)
+    protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
         return Convert.ToInt32(leftValue == rightValue);
     }
