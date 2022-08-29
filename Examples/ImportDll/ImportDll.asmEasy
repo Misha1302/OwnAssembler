@@ -1,0 +1,5 @@
+push "AssemblerDll" 				; connect the library to this project
+import 								; import the dll we just pushed on the stack
+	
+push "AssemblerDll.HelloMethod" 	; push method path ("<DllName>.<Method>")
+invoke 								; invoke method

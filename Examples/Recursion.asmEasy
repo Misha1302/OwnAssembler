@@ -1,0 +1,23 @@
+push 0
+ramWrite "var"
+
+call "Hello"
+
+exit
+
+setMark "Hello"
+
+	ramRead "var"
+	push 1
+	add
+	copy
+	ramWrite "var"
+
+	push "\n"
+
+	push 2
+	output
+
+	call "Hello"
+	
+ret

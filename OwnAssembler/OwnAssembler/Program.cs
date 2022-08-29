@@ -13,6 +13,7 @@ public static class Program
         Start(GetParameters(args));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static Dictionary<string, object> GetParameters(IReadOnlyList<string> args)
     {
         var parameters = new Dictionary<string, object>();
@@ -68,6 +69,7 @@ public static class Program
 
     // there is no point in worrying about security in this context
 #pragma warning disable SYSLIB0011
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void SerializeByteCode(string byteCodePath, ByteCode byteCode)
     {
         var formatter = new BinaryFormatter();
@@ -75,6 +77,7 @@ public static class Program
         formatter.Serialize(fs, byteCode);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void DeserializeByteCode(string byteCodePath, out ByteCode byteCode)
     {
         var formatter = new BinaryFormatter();

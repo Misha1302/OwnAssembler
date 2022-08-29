@@ -1,0 +1,12 @@
+readKey	
+push 'q'
+equals 
+
+if
+	push "You pressed Q"
+else
+	push "You pressed another key"
+endif
+
+push 1
+output

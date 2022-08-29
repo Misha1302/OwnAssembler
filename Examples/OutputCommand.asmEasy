@@ -1,0 +1,4 @@
+push "Hello!\n" ; add a string to the stack
+push "Bye\t-\tbye!" ; add a string to the stack
+push 2 ; add to the stack the number of cells in the stack for output
+output ; output value

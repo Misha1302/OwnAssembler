@@ -1,3 +1,4 @@
+
 # OwnAssembler
 A pseudo programming language similar to assembler
 
@@ -14,7 +15,8 @@ A pseudo programming language similar to assembler
 - -compile 		true/false
 - -byteCodeRead ПУТЬ
 - -bytecodesave ПУТЬ
-- Аргументы можно писать в любом регистре, но стоит соблюдать регистр, когда указываете путь
+
+Аргументы можно писать в любом регистре, но стоит соблюдать регистр пути файла
 
 ---
 Проекты:
@@ -32,7 +34,7 @@ A pseudo programming language similar to assembler
 4. Создать статические методы, которые вы будете использовать в ассемблере
 5. Все методы, что будут использоваться в ассемблере, должны принимать параметры (важно соблюдать порядок параметров): 
 - CpuStack stack
-- List<ICommand> commands
+- List\<ICommand\> commands
 - RefCurrentCommandIndex currentCommandIndex
 6. Возможно, Вам понадобятся using'и (совет):
 - using OwnAssembler.Assembler.HighLevelCommands;

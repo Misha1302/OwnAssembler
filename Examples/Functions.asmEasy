@@ -1,0 +1,31 @@
+; --- code --- ;
+
+push "0"
+push 1
+output
+pop
+
+call "HelloFunc"
+
+push "1"
+push 1
+output
+pop
+
+; --- code end --- ;
+
+
+exit ; it is important that the exit command precede the functions, otherwise the ret command will either crash the application or behave illogically
+
+
+; --- functions --- ;
+
+setMark "HelloFunc"
+	push "Привееееееет!!!"
+	push 1
+	output
+	
+	ret
+	
+	
+; --- functions end --- ;
