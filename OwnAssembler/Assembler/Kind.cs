@@ -40,9 +40,11 @@ public enum Kind
     GetTimeInMilliseconds,
 
     Exit,
-    
+
     Invoke,
     Import,
+
+    Copy,
 
 
     Int,

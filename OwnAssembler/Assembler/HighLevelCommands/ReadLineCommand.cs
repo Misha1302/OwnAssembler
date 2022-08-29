@@ -1,9 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.Assembler.LowLevelCommands;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
+[Serializable]
 public class ReadLineCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

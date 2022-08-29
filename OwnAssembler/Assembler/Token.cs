@@ -15,7 +15,7 @@ public class Token
         Text = text;
         Value = value;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public Token(Kind tokenKind, char text, object? value = null)
     {

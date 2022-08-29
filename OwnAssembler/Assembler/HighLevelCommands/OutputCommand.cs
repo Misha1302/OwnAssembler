@@ -1,23 +1,25 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text;
-using OwnAssembler.Assembler.LowLevelCommands;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
+[Serializable]
 public class OutputCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        var length = (int)stack.Pop();
+        var length = (int)stack.Pop()!;
         var stringBuilder = new StringBuilder(512);
         var list = new ArrayList(length);
 
-        for (var i = stack.Count - length; i < stack.Count; i++) list.Add(stack[i]);
+        var count = stack.Count;
 
-        foreach (var item in list.ToArray().Select(x => x?.ToString())) stringBuilder.Append(item);
+        for (var i = count; i > count - length; i--) list.Add(stack.Pop());
+
+        foreach (var item in list.ToArray().Reverse().Select(x => x?.ToString())) stringBuilder.Append(item);
 
         Console.Write(stringBuilder.ToString());
         currentCommandIndex++;

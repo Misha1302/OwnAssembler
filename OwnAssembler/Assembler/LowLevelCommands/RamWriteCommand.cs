@@ -1,8 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
+using Cpu.CentralProcessingUnit;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class RamWriteCommand : ICommand
 {
     private readonly string _address;
@@ -10,13 +12,13 @@ public class RamWriteCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public RamWriteCommand(string address)
     {
-        _address = address + Thread.CurrentThread.ManagedThreadId;
+        _address = address;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        Ram.Write(_address, stack.Peek());
+        Ram.Write(_address, stack.Pop());
         currentCommandIndex++;
     }
 

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.CentralProcessingUnit;
+namespace Cpu.CentralProcessingUnit;
 
 // heap analogue
 public static class Ram

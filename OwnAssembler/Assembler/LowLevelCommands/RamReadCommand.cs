@@ -1,8 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
+using Cpu.CentralProcessingUnit;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class RamReadCommand : ICommand
 {
     private readonly string _address;
@@ -10,7 +12,7 @@ public class RamReadCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public RamReadCommand(string address)
     {
-        _address = address + Thread.CurrentThread.ManagedThreadId;
+        _address = address;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

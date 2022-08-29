@@ -48,6 +48,8 @@ public class Lexer
         { "import", Kind.Import },
         { "invoke", Kind.Invoke },
 
+        { "copy", Kind.Copy },
+
         { "converttostring", Kind.ConvertToString },
         { "converttoint", Kind.ConvertToInt },
         { "converttodouble", Kind.ConvertToDouble },
@@ -91,73 +93,87 @@ public class Lexer
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private Token GetNextToken()
     {
-        _position++;
-
-        if (_code.Length <= _position || _code[_position] == '\0') return new Token(Kind.Eof, '\0');
-
-        var currentChar = _code[_position];
-
-        if (currentChar == '\n') return new Token(Kind.NewLine, "\n");
-        if (char.IsWhiteSpace(currentChar)) return new Token(Kind.Whitespace, currentChar);
-
-        switch (currentChar)
+        while (true)
         {
-            case '"':
-            {
-                var value = _code[(_position + 1)..(_code[(_position + 1)..].IndexOf('"') + _position + 1)];
-                _position += value.Length + 1;
-                value = Regex.Unescape(value);
-                return new Token(Kind.String, value, value);
-            }
-            case '\'':
-            {
-                _position++;
-                var ch = _code[_position];
-                _position++;
-                return new Token(Kind.Char, ch, ch);
-            }
-        }
+            _position++;
 
-        if (currentChar == '-' || char.IsNumber(currentChar))
-        {
-            var number = new StringBuilder();
+            if (_code.Length <= _position || _code[_position] == '\0') return new Token(Kind.Eof, '\0');
 
-            var ch = _code[_position];
-            var ifDouble = false;
-            do
+            var currentChar = _code[_position];
+
+            if (currentChar == '\n') return new Token(Kind.NewLine, "\n");
+            if (char.IsWhiteSpace(currentChar)) return new Token(Kind.Whitespace, currentChar);
+
+            switch (currentChar)
             {
-                if (ch != '_')
+                case '"':
                 {
-                    if (ch == '.') ifDouble = true;
-                    number.Append(ch);
+                    var value = _code[(_position + 1)..(_code[(_position + 1)..].IndexOf('"') + _position + 1)];
+                    _position += value.Length + 1;
+                    value = Regex.Unescape(value);
+                    return new Token(Kind.String, value, value);
+                }
+                case '\'':
+                {
+                    _position++;
+                    var ch = _code[_position];
+                    _position++;
+                    return new Token(Kind.Char, ch, ch);
+                }
+                case ';':
+                {
+                    while (_code[_position] != '\n')
+                    {
+                        _position++;
+                        if (_code[_position] == '\0') return new Token(Kind.Eof, '\0');
+                    }
+
+                    _position--;
+                    continue;
+                }
+            }
+
+            if (currentChar == '-' || char.IsNumber(currentChar))
+            {
+                var number = new StringBuilder();
+
+                var ch = _code[_position];
+                var ifDouble = false;
+                do
+                {
+                    if (ch != '_')
+                    {
+                        if (ch == '.') ifDouble = true;
+                        number.Append(ch);
+                    }
+
+                    _position++;
+                } while (_code.Length > _position && (char.IsNumber(ch = _code[_position]) || ch is '_' or '.'));
+
+                _position--;
+                var numberStr = number.ToString();
+                return ifDouble
+                    ? new Token(Kind.Double, numberStr, Convert.ToDouble(numberStr.Replace('.', ',')))
+                    : new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr));
+            }
+
+            foreach (var commandPair in _commands.Where(commandPair =>
+                         _code[_position..].IndexOf(commandPair.Key, StringComparison.Ordinal) == 0))
+            {
+                if (_code.Length > _position + commandPair.Key.Length + 1)
+                {
+                    if (Regex.IsMatch(_code[_position + commandPair.Key.Length].ToString(), "[a-zA-Z]")) continue;
+
+                    _position += commandPair.Key.Length - 1;
+
+                    return new Token(commandPair.Value, commandPair.Key);
                 }
 
-                _position++;
-            } while (_code.Length > _position && (char.IsNumber(ch = _code[_position]) || ch is '_' or '.'));
-
-            _position--;
-            var numberStr = number.ToString();
-            return ifDouble
-                ? new Token(Kind.Double, numberStr, Convert.ToDouble(numberStr.Replace('.', ',')))
-                : new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr));
-        }
-
-        foreach (var commandPair in _commands.Where(commandPair =>
-                     _code[_position..].IndexOf(commandPair.Key, StringComparison.Ordinal) == 0))
-        {
-            if (_code.Length > _position + commandPair.Key.Length + 1)
-            {
-                if (Regex.IsMatch(_code[_position + commandPair.Key.Length].ToString(), "[a-zA-Z]")) continue;
-
                 _position += commandPair.Key.Length - 1;
-
                 return new Token(commandPair.Value, commandPair.Key);
             }
 
-            _position += commandPair.Key.Length - 1;
-            return new Token(commandPair.Value, commandPair.Key);
+            return new Token(Kind.Unknown, currentChar);
         }
-
-        return new Token(Kind.Unknown, currentChar);
     }
 }

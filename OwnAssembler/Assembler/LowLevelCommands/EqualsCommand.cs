@@ -2,6 +2,7 @@
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class EqualsCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

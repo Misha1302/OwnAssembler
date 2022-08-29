@@ -2,6 +2,7 @@
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class LessThanCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

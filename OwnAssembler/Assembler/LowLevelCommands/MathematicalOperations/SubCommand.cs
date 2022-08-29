@@ -2,8 +2,10 @@
 
 namespace OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
 
+[Serializable]
 public class SubtractCommand : BaseBinaryCommand
 {
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public SubtractCommand() : base("sub")
     {
     }

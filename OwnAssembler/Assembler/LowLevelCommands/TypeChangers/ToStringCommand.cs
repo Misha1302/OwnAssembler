@@ -1,17 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
+[Serializable]
 public class ToStringCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        var value = stack.Peek();
+        var value = stack.Pop();
         if (value is double d) value = d.ToString("0." + new string('#', 324));
-        else value = value.ToString();
-        
+        else value = value!.ToString();
+
         stack.Push(value);
         currentCommandIndex++;
     }

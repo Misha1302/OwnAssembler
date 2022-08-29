@@ -1,8 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class GotoCommand : ICommand
 {
     private readonly List<ICommand> _commands;
@@ -16,8 +17,8 @@ public class GotoCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        var gotoMark = (string)stack.Peek() ?? throw new IndexOutOfRangeException("mark null not found");
-        
+        var gotoMark = (string)stack.Pop()! ?? throw new IndexOutOfRangeException("mark null not found");
+
         var numberOfPasses = 0;
         while (true)
         {

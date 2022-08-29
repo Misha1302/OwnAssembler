@@ -1,14 +1,15 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
+[Serializable]
 public class ToInt32Command : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        stack.Push(int.Parse(stack.Peek().ToString()));
+        stack.Push(Convert.ToInt32(stack.Pop()));
         currentCommandIndex++;
     }
 

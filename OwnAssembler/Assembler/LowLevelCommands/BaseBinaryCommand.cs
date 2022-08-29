@@ -1,12 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public abstract class BaseBinaryCommand : ICommand
 {
     private readonly string _commandName;
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected BaseBinaryCommand(string commandName)
     {
         _commandName = commandName;
@@ -15,12 +17,8 @@ public abstract class BaseBinaryCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        var b = stack[^2];
-        var a = stack[^1];
-        
-        stack.Push(ExecuteBinaryCommand(a, b));
-        
-        
+        stack.Push(ExecuteBinaryCommand(stack.Pop()!, stack.Pop()!));
+
         currentCommandIndex++;
     }
 

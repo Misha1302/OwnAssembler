@@ -1,13 +1,21 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
-public interface ICommand
+[Serializable]
+public class CopyCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    void Execute(CpuStack stack, ref int currentCommandIndex);
-    
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
+    {
+        stack.Push(stack.Peek());
+        currentCommandIndex++;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    void Dump();
+    public void Dump()
+    {
+        Console.Write("copy");
+    }
 }

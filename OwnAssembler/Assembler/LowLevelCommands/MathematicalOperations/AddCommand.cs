@@ -2,6 +2,7 @@
 
 namespace OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
 
+[Serializable]
 public class AddCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

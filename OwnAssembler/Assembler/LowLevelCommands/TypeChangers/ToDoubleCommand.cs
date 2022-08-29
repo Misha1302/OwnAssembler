@@ -1,14 +1,15 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
+[Serializable]
 public class ToDoubleCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        stack.Push(double.Parse(stack.Peek().ToString()));
+        stack.Push(Convert.ToInt32(stack.Pop()));
         currentCommandIndex++;
     }
 

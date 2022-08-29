@@ -1,9 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.Assembler.LowLevelCommands;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
+[Serializable]
 public class GetTimeInMillisecondsCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
@@ -13,7 +13,7 @@ public class GetTimeInMillisecondsCommand : ICommand
         currentCommandIndex++;
     }
 
-    
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {

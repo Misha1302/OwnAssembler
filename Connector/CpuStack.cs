@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.CentralProcessingUnit;
+namespace Connector;
 
 public class CpuStack
 {

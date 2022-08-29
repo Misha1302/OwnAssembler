@@ -1,8 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class GotoMark : ICommand
 {
     public readonly string MarkName;

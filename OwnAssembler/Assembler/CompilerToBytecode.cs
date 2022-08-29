@@ -1,31 +1,30 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.Assembler;
+using Connector;
 using OwnAssembler.Assembler.HighLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands.Dlls;
 using OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
-namespace OwnAssembler.CentralProcessingUnit;
+namespace OwnAssembler.Assembler;
 
 public static class CompilerToBytecode
 {
     private static readonly string RamMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-    private static CpuApplication _thisApplication = null!;
 
+
+#pragma warning disable CS8600
+#pragma warning disable CS8604
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static List<ICommand> Compile(string code, List<ICommand> commands, CpuApplication thisApplication)
+    public static void Compile(string code, List<ICommand> commands)
     {
-        _thisApplication = thisApplication;
-
         var lexer = new Lexer(code);
         var tokens = lexer.GetTokens();
-        var line = 0;
 
 
         var ifClauseStartIndex = 0;
         var ifClauseEndIndex = 0;
-        var elseClause = false;
+        var elseClauseBool = false;
         var elseClauseStartIndex = 0;
 
         for (var index = 0; index < tokens.Count; index++)
@@ -34,8 +33,6 @@ public static class CompilerToBytecode
             // {
             object arg1;
 
-            ICommand[] ifClauseArray;
-            ICommand[] elseClauseArray;
             switch (tokens[index].TokenKind)
             {
                 case Kind.Import:
@@ -52,6 +49,10 @@ public static class CompilerToBytecode
                     break;
                 case Kind.Add:
                     commands.Add(new AddCommand());
+                    index++;
+                    break;
+                case Kind.GetTimeInMilliseconds:
+                    commands.Add(new GetTimeInMillisecondsCommand());
                     index++;
                     break;
                 case Kind.ReadKey:
@@ -97,6 +98,10 @@ public static class CompilerToBytecode
                     break;
                 case Kind.Clear:
                     commands.Add(new ClearStackCommand());
+                    index++;
+                    break;
+                case Kind.Copy:
+                    commands.Add(new CopyCommand());
                     index++;
                     break;
                 case Kind.ConvertToDouble:
@@ -155,40 +160,15 @@ public static class CompilerToBytecode
                 case Kind.Else:
                     ifClauseEndIndex = commands.Count;
                     elseClauseStartIndex = commands.Count;
-                    elseClause = true;
+                    elseClauseBool = true;
                     index++;
                     break;
                 case Kind.EndIf:
-                    var elseClauseEndIndex = commands.Count;
-                    if (!elseClause)
-                    {
-                        ifClauseEndIndex = commands.Count;
-                        elseClauseStartIndex = commands.Count;
-                    }
-
-                    ifClauseArray = commands
-                        .GetRange(ifClauseStartIndex, ifClauseEndIndex - ifClauseStartIndex).ToArray();
-                    elseClauseArray = commands
-                        .GetRange(elseClauseStartIndex, elseClauseEndIndex - elseClauseStartIndex).ToArray();
-
-                    var ifCompileIEnumerator =
-                        new IfCommand(ifClauseArray, elseClauseArray).Compile(_thisApplication.Stack);
-
-                    commands.RemoveRange(ifClauseStartIndex, elseClauseEndIndex - ifClauseStartIndex);
-
-                    commands.AddRange(ifCompileIEnumerator);
-
-
-                    ifClauseStartIndex = 0;
-                    ifClauseEndIndex = 0;
-                    elseClause = false;
-                    elseClauseStartIndex = 0;
-
-
-                    index++;
+                    AddIfCommand(commands, ref elseClauseBool, ref ifClauseEndIndex,
+                        ref elseClauseStartIndex, ref ifClauseStartIndex, ref index);
                     break;
                 case Kind.Exit:
-                    commands.Add(new ExitCommand(_thisApplication));
+                    commands.Add(new ExitCommand());
                     index++;
                     break;
                 case Kind.SetMark:
@@ -198,7 +178,6 @@ public static class CompilerToBytecode
                     break;
                 case Kind.NewLine:
                 case Kind.String:
-                    line++;
                     break;
                 default:
                     throw new MissingMethodException(tokens[index].TokenKind.ToString());
@@ -210,8 +189,39 @@ public static class CompilerToBytecode
             // }
         }
 
-        commands.Add(new ExitCommand(thisApplication));
+        commands.Add(new ExitCommand());
 
-        return commands;
+#pragma warning restore CS8600
+#pragma warning restore CS8604
+    }
+
+    private static void AddIfCommand(List<ICommand> commands, ref bool elseClause, ref int ifClauseEndIndex,
+        ref int elseClauseStartIndex, ref int ifClauseStartIndex, ref int index)
+    {
+        var elseClauseEndIndex = commands.Count;
+        if (!elseClause)
+        {
+            ifClauseEndIndex = commands.Count;
+            elseClauseStartIndex = commands.Count;
+        }
+
+        var ifClauseArray = commands.GetRange(ifClauseStartIndex, ifClauseEndIndex - ifClauseStartIndex);
+        var elseClauseArray = commands.GetRange(elseClauseStartIndex, elseClauseEndIndex - elseClauseStartIndex);
+
+        var ifCompileIEnumerator =
+            new IfCommand(ifClauseArray, elseClauseArray).Compile();
+
+        commands.RemoveRange(ifClauseStartIndex, elseClauseEndIndex - ifClauseStartIndex);
+
+        commands.AddRange(ifCompileIEnumerator);
+
+
+        ifClauseStartIndex = 0;
+        ifClauseEndIndex = 0;
+        elseClause = false;
+        elseClauseStartIndex = 0;
+
+
+        index++;
     }
 }

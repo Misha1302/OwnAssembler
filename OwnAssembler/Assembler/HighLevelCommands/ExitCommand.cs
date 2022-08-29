@@ -1,28 +1,20 @@
 ﻿using System.Runtime.CompilerServices;
-using OwnAssembler.Assembler.LowLevelCommands;
-using OwnAssembler.CentralProcessingUnit;
+using Connector;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
+[Serializable]
 public class ExitCommand : ICommand
 {
-    private readonly CpuApplication cpuApplication;
-    
-    public ExitCommand(CpuApplication cpuApplication)
-    {
-        this.cpuApplication = cpuApplication;
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
-        currentCommandIndex = int.MaxValue;
-        cpuApplication.ApplicationExit();
+        currentCommandIndex = -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("--- Exit ---");
+        Console.Write("exit");
     }
 }

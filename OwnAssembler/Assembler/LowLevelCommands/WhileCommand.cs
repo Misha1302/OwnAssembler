@@ -1,7 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
+using Connector;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 
+[Serializable]
 public class WhileCommand
 {
     private readonly ICommand[] _whileBody;
