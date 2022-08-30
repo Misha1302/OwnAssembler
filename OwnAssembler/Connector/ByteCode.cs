@@ -5,15 +5,11 @@ namespace Connector;
 [Serializable]
 public class ByteCode
 {
-    public readonly List<ICommand> Commands;
+    public readonly IReadOnlyList<ICommand> Commands;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public ByteCode(List<ICommand> commands)
+    public ByteCode(IReadOnlyList<ICommand> commands)
     {
         Commands = commands;
-    }
-
-    public ByteCode()
-    {
     }
 }

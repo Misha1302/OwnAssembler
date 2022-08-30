@@ -9,7 +9,7 @@ namespace OwnAssembler.Assembler.HighLevelCommands;
 public class OutputCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
         var length = (int)stack.Pop()!;
         var stringBuilder = new StringBuilder(512);

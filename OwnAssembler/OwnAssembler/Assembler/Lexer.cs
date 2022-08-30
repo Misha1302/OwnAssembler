@@ -50,6 +50,10 @@ public class Lexer
 
         { "copy", Kind.Copy },
 
+        { "setpriority", Kind.SetPriority },
+
+        { "nop", Kind.Nop },
+
         { "converttostring", Kind.ConvertToString },
         { "converttoint", Kind.ConvertToInt },
         { "converttodouble", Kind.ConvertToDouble },

@@ -15,7 +15,7 @@ public class InvokeCommand : ICommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
         var split = ((string)stack.Pop()!).Split('.');
         var dllName = split[0];

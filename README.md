@@ -1,4 +1,6 @@
 
+
+
 # OwnAssembler
 A pseudo programming language similar to assembler
 
@@ -15,6 +17,7 @@ A pseudo programming language similar to assembler
 - -compile 		true/false
 - -byteCodeRead ПУТЬ
 - -bytecodesave ПУТЬ
+- -debug 		true/false
 
 Аргументы можно писать в любом регистре, но стоит соблюдать регистр пути файла
 
@@ -77,12 +80,29 @@ A pseudo programming language similar to assembler
 - "converttodouble"
 - "converttobool"
 - "converttochar"
+- "nop"
 
 ---
 Комментарии:
 - однострочный комментарий - комментарий начинается с символа ';' и продолжается до конца строки
 
+---
+Debug mode:
+- чтобы включить debug mode, нужно запустить ассемблер с аргументом: "-debug true"
+- логи стека хранятся в файле "stackLog.txt", в директории с программой
+- логи RAM хранятся в файле "stackLog.txt", в директории с программой
+- Хранение логов:
+	 - 5   | 0: Привет   
+	 - 5 - номер команды
+	 - 0 - номер регистра
+	 - "Привет" - значение в регистре
+
+---
+Мои контакты:
+telegram - @Micodiy
+vk - [Миша Разаков (vk.com)](https://vk.com/misha13022008)
+discord - Разаков Миша#7375
 
 
 ---
-**Readme.txt написана под версию ассемблера v0.3**
+**Readme написан под версию v0.35**

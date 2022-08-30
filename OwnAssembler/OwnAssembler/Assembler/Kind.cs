@@ -11,6 +11,11 @@ public enum Kind
     Output,
     ReadKey,
     Clear,
+    GetTimeInMilliseconds,
+    Copy,
+    SetPriority,
+    Nop,
+    Exit,
 
     Push,
     Pop,
@@ -37,14 +42,8 @@ public enum Kind
     ConvertToBool,
     ConvertToChar,
 
-    GetTimeInMilliseconds,
-
-    Exit,
-
     Invoke,
     Import,
-
-    Copy,
 
 
     Int,

@@ -16,7 +16,7 @@ public class RamReadCommand : ICommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
         stack.Push(Ram.Read(_address));
         currentCommandIndex++;

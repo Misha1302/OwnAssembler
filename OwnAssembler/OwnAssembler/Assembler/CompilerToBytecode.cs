@@ -13,8 +13,6 @@ public static class CompilerToBytecode
     private static readonly string RamMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
 
-#pragma warning disable CS8600
-#pragma warning disable CS8604
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void Compile(string code, List<ICommand> commands)
     {
@@ -55,6 +53,14 @@ public static class CompilerToBytecode
                     commands.Add(new GetTimeInMillisecondsCommand());
                     index++;
                     break;
+                case Kind.SetPriority:
+                    commands.Add(new SetApplicationPriorityCommand());
+                    index++;
+                    break;
+                case Kind.Nop:
+                    commands.Add(new NopCommand());
+                    index++;
+                    break;
                 case Kind.ReadKey:
                     commands.Add(new ReadKeyCommand());
                     index++;
@@ -87,12 +93,12 @@ public static class CompilerToBytecode
                     index++;
                     break;
                 case Kind.RamRead:
-                    arg1 = tokens[index + 1].Value;
+                    arg1 = tokens[index + 1].Value!;
                     commands.Add(new RamReadCommand((string)arg1));
                     index++;
                     break;
                 case Kind.RamWrite:
-                    arg1 = tokens[index + 1].Value;
+                    arg1 = tokens[index + 1].Value!;
                     commands.Add(new RamWriteCommand((string)arg1));
                     index++;
                     break;
@@ -125,7 +131,7 @@ public static class CompilerToBytecode
                     index++;
                     break;
                 case Kind.Push:
-                    arg1 = tokens[index + 1].Value;
+                    arg1 = tokens[index + 1].Value!;
                     commands.Add(new PushCommand(arg1));
                     index++;
                     break;
@@ -134,7 +140,7 @@ public static class CompilerToBytecode
                     index++;
                     break;
                 case Kind.Call:
-                    arg1 = tokens[++index].Value;
+                    arg1 = tokens[++index].Value!;
                     var startIndex = index;
                     var markName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
@@ -172,7 +178,7 @@ public static class CompilerToBytecode
                     index++;
                     break;
                 case Kind.SetMark:
-                    arg1 = tokens[index + 1].Value;
+                    arg1 = tokens[index + 1].Value!;
                     commands.Add(new GotoMark((string)arg1));
                     index++;
                     break;
@@ -190,9 +196,6 @@ public static class CompilerToBytecode
         }
 
         commands.Add(new ExitCommand());
-
-#pragma warning restore CS8600
-#pragma warning restore CS8604
     }
 
     private static void AddIfCommand(List<ICommand> commands, ref bool elseClause, ref int ifClauseEndIndex,

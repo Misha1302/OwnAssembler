@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace OwnAssembler.Assembler;
 
@@ -17,7 +16,7 @@ public static class Preprocessor
 
         var splitted = code.Split('"', '\'');
 
-        for (var i = 0; i < splitted.Length; i += 2) code = code.ToLower();
+        for (var i = 0; i < splitted.Length; i += 2) splitted[i] = splitted[i].ToLower();
 
         var result = new StringBuilder(string.Join('☻', splitted));
 

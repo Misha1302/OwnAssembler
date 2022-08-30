@@ -5,7 +5,7 @@ namespace Cpu.CentralProcessingUnit;
 // heap analogue
 public static class Ram
 {
-    private static readonly Dictionary<string, object?> RamDictionary = new();
+    public static readonly Dictionary<string, object?> RamDictionary = new();
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static object? Read(string address)

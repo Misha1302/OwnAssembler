@@ -16,7 +16,7 @@ public class RamWriteCommand : ICommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
         Ram.Write(_address, stack.Pop());
         currentCommandIndex++;

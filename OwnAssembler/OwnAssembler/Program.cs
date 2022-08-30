@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using Connector;
 using OwnAssembler.Assembler;
@@ -10,7 +11,16 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        // to do debug logs
+        OptimizeApplication();
         Start(GetParameters(args));
+    }
+
+    private static void OptimizeApplication()
+    {
+        ProfileOptimization.SetProfileRoot(Directory.GetCurrentDirectory());
+        ProfileOptimization.StartProfile("MainProfile");
+        Thread.CurrentThread.Priority = ThreadPriority.Highest;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
@@ -20,8 +30,9 @@ public static class Program
 
         var defaultParameters = new List<(string key, object value)>
         {
-            ("-codepath", "Code.asmEasy"),
             ("-compile", true),
+            ("-debug", false),
+            ("-codepath", "Code.asmEasy"),
             ("-bytecoderead", "byteCode.dat"),
             ("-bytecodesave", "byteCode.dat")
         };
@@ -32,7 +43,7 @@ public static class Program
 
             index++;
 
-            object value = arg != "-compile" ? args[index] : args[index].ToLower() == "true";
+            object value = arg != "-compile" && arg != "-debug" ? args[index] : args[index].ToLower() == "true";
             parameters.Add(arg, value);
         }
 
@@ -46,13 +57,16 @@ public static class Program
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void Start(IReadOnlyDictionary<string, object> parameters)
     {
-        var commands = new List<ICommand>(64);
-        var code = File.ReadAllText((string)parameters["-codepath"]);
-        var byteCode = new ByteCode(commands);
-
+        var debugMode = (bool)parameters["-debug"];
         var needsCompilation = (bool)parameters["-compile"];
+        var assemblerCodePath = (string)parameters["-codepath"];
         var byteCodeSave = (string)parameters["-bytecodesave"];
         var byteCodeRead = (string)parameters["-bytecoderead"];
+
+        var commands = new List<ICommand>(64);
+        var code = File.ReadAllText(assemblerCodePath);
+        var byteCode = new ByteCode(commands);
+
 
         if (needsCompilation)
         {
@@ -62,8 +76,7 @@ public static class Program
 
         DeserializeByteCode(byteCodeRead, out byteCode);
 
-
-        Processor.StartNewApplication(byteCode);
+        Processor.StartNewApplication(byteCode, debugMode);
     }
 
 
@@ -72,17 +85,17 @@ public static class Program
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void SerializeByteCode(string byteCodePath, ByteCode byteCode)
     {
-        var formatter = new BinaryFormatter();
+        var binaryFormatter = new BinaryFormatter();
         using var fs = new FileStream(byteCodePath, FileMode.OpenOrCreate);
-        formatter.Serialize(fs, byteCode);
+        binaryFormatter.Serialize(fs, byteCode);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void DeserializeByteCode(string byteCodePath, out ByteCode byteCode)
     {
-        var formatter = new BinaryFormatter();
-        using var fs = new FileStream(byteCodePath, FileMode.OpenOrCreate);
-        byteCode = (ByteCode)formatter.Deserialize(fs);
+        var binaryFormatter = new BinaryFormatter();
+        using var fs = new FileStream(byteCodePath, FileMode.Open);
+        byteCode = (ByteCode)binaryFormatter.Deserialize(fs);
     }
 #pragma warning restore SYSLIB0011
 }
