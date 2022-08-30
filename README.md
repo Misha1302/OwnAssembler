@@ -1,6 +1,7 @@
 
 
 
+
 # OwnAssembler
 A pseudo programming language similar to assembler
 
@@ -10,6 +11,11 @@ A pseudo programming language similar to assembler
 - Платформа net core
 - 35 классов
 - 3 проекта (project)
+
+---
+О синтаксисе:
+- в проекте есть файл "AsmEasyHighlight.xml"
+- если импортировать его в notepad++, то вы получите подсветку синтаксиса
 
 ---
 Аргументы ассемблера:
@@ -62,8 +68,6 @@ A pseudo programming language similar to assembler
 - "if"
 - "else"
 - "endif"
-- "while"
-- "endWhile"
 - "ramread"
 - "ramwrite"
 - "setmark"
@@ -92,7 +96,7 @@ Debug mode:
 - логи стека хранятся в файле "stackLog.txt", в директории с программой
 - логи RAM хранятся в файле "stackLog.txt", в директории с программой
 - Хранение логов:
-	 - 5   | 0: Привет   
+	 - Пример - "5   | 0: Привет"   
 	 - 5 - номер команды
 	 - 0 - номер регистра
 	 - "Привет" - значение в регистре
@@ -105,4 +109,4 @@ discord - Разаков Миша#7375
 
 
 ---
-**Readme написан под версию v0.35**
+**Readme написан под версию v0.37**

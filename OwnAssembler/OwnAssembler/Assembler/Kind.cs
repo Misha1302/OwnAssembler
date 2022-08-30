@@ -30,9 +30,6 @@ public enum Kind
     Goto,
     SetMark,
 
-    While,
-    EndWhile,
-
     Call,
     Ret,
 

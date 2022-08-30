@@ -17,20 +17,28 @@ public class Lexer
         { "sub", Kind.Sub },
         { "jmp", Kind.Jmp },
         { "clear", Kind.Clear },
+        { "gettimems", Kind.GetTimeInMilliseconds },
+        { "copy", Kind.Copy },
+        { "setpriority", Kind.SetPriority },
+        { "nop", Kind.Nop },
+        { "exit", Kind.Exit },
 
-        { "push", Kind.Push },
-        { "pop", Kind.Pop },
-
+        { "converttostring", Kind.ConvertToString },
+        { "converttoint", Kind.ConvertToInt },
+        { "converttodouble", Kind.ConvertToDouble },
+        { "converttobool", Kind.ConvertToBool },
+        { "converttochar", Kind.ConvertToChar },
+        
         { "output", Kind.Output },
         { "readkey", Kind.ReadKey },
         { "readline", Kind.ReadLine },
+        
+        { "push", Kind.Push },
+        { "pop", Kind.Pop },
 
         { "if", Kind.If },
         { "else", Kind.Else },
         { "endif", Kind.EndIf },
-
-        { "while", Kind.While },
-        { "endWhile", Kind.EndWhile },
 
         { "ramread", Kind.RamRead },
         { "ramwrite", Kind.RamWrite },
@@ -41,24 +49,8 @@ public class Lexer
         { "call", Kind.Call },
         { "ret", Kind.Ret },
 
-        { "gettimems", Kind.GetTimeInMilliseconds },
-
-        { "exit", Kind.Exit },
-
         { "import", Kind.Import },
-        { "invoke", Kind.Invoke },
-
-        { "copy", Kind.Copy },
-
-        { "setpriority", Kind.SetPriority },
-
-        { "nop", Kind.Nop },
-
-        { "converttostring", Kind.ConvertToString },
-        { "converttoint", Kind.ConvertToInt },
-        { "converttodouble", Kind.ConvertToDouble },
-        { "converttobool", Kind.ConvertToBool },
-        { "converttochar", Kind.ConvertToChar }
+        { "invoke", Kind.Invoke }
     };
 
     private int _position = -1;
