@@ -64,8 +64,8 @@ public static class Program
         var byteCodeRead = (string)parameters["-bytecoderead"];
 
         var commands = new List<ICommand>(64);
-        var code = File.ReadAllText(assemblerCodePath);
         var byteCode = new ByteCode(commands);
+        var code = ReadCodeFromFile(assemblerCodePath);
 
 
         if (needsCompilation)
@@ -77,6 +77,21 @@ public static class Program
         DeserializeByteCode(byteCodeRead, out byteCode);
 
         Processor.StartNewApplication(byteCode, debugMode);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+    private static string ReadCodeFromFile(string assemblerCodePath)
+    {
+        try
+        {
+            return File.ReadAllText(assemblerCodePath);
+        }
+        catch (FileNotFoundException)
+        {
+            const string exceptionMessage =
+                "Code file not found. \nPlace a file named \"Code.asmEasy\" in the application folder and write the code there, or specify the full path to the file through the -codePath PATH command line arguments";
+            throw new Exception(exceptionMessage);
+        }
     }
 
 
