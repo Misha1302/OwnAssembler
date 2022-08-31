@@ -5,17 +5,17 @@ namespace Cpu.CentralProcessingUnit;
 // heap analogue
 public static class Ram
 {
-    public static readonly Dictionary<string, object?> RamDictionary = new();
+    public static readonly Dictionary<string, int> RamDictionary = new();
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static object? Read(string address)
+    public static int Read(string address)
     {
         var result = RamDictionary[address];
         return result;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static void Write(string address, object? value)
+    public static void Write(string address, int value)
     {
         RamDictionary[address] = value;
     }

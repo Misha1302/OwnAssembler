@@ -6,24 +6,24 @@ namespace OwnAssembler.Assembler.LowLevelCommands;
 [Serializable]
 public class PushCommand : ICommand
 {
-    private readonly object _constant;
+    private readonly int[] _constantInts;
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public PushCommand(object constant)
+    public PushCommand(params int[] constantInts)
     {
-        _constant = constant;
+        _constantInts = constantInts;
     }
+
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
-        stack.Push(_constant);
+        foreach (var constantInt in _constantInts) stack.Push(constantInt);
         currentCommandIndex++;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write($"push {_constant}");
+        Console.Write("push");
     }
 }

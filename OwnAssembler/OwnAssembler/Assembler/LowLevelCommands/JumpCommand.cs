@@ -9,7 +9,7 @@ public class JumpCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
-        currentCommandIndex += (int)(stack.Pop() ?? throw new TypeAccessException("Jump only works with int values"));
+        currentCommandIndex += stack.Pop();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

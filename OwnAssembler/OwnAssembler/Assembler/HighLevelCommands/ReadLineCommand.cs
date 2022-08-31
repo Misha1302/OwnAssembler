@@ -9,7 +9,7 @@ public class ReadLineCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
-        stack.Push(Console.ReadLine());
+        stack.PushString($"${Console.ReadLine()}$");
         currentCommandIndex++;
     }
 

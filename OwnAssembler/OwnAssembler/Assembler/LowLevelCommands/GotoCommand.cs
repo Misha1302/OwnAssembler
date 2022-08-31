@@ -17,7 +17,7 @@ public class GotoCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
-        var gotoMark = (string)stack.Pop()! ?? throw new IndexOutOfRangeException("mark null not found");
+        var gotoMark = stack.GetString() ?? throw new IndexOutOfRangeException("mark null not found");
 
         var numberOfPasses = 0;
         while (true)

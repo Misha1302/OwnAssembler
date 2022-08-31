@@ -1,48 +1,104 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Connector;
 
 public class CpuStack
 {
-    public ArrayList Stack;
+    private readonly List<int> _stack;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public CpuStack(int capacity = 64)
+    public CpuStack(int capacity = 32)
     {
-        Stack = new ArrayList(capacity);
+        _stack = new List<int>(capacity);
     }
 
-    public int Count => Stack.Count;
+    public int Count => _stack.Count;
 
-    public object? this[int index] => Stack[index];
+    public int this[int index]
+    {
+        get
+        {
+            try
+            {
+                return _stack[index];
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+    }
 
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Push(object? value)
+    public void Push(int value)
     {
-        Stack.Add(value);
+        _stack.Add(value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public object? Peek()
+    public int Peek()
     {
-        return Count > 0 ? Stack[^1] : null;
+        return _stack[^1];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public object? Pop()
+    public int Pop()
     {
-        if (Count == 0) return null;
-
-        var returnValue = Stack[^1];
-        Stack.RemoveAt(Count - 1);
+        var returnValue = Peek();
+        _stack.RemoveAt(Count - 1);
         return returnValue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
-        Stack.Clear();
+        _stack.Clear();
+    }
+
+    /// <summary>
+    ///     reads numbers until it encounters a '$' character
+    /// </summary>
+    /// <returns></returns>
+    public string GetString()
+    {
+        var stringBuilder = new StringBuilder(512);
+        var list = new List<int>(32);
+
+        while (this[^2] != '\\' && Peek() != '$') list.Add(Pop());
+
+        foreach (var item in list.ToArray().Select(x => (char)(uint)x)) stringBuilder.Append(item);
+
+        return stringBuilder.ToString();
+    }
+
+    /// <summary>
+    ///     saves the string as the order of the numbers. <br />
+    ///     string -> symbols -> numbers <br />
+    ///     the last character of the string is stored last <br />
+    /// </summary>
+    /// <param name="str"></param>
+    public void PushString(string str)
+    {
+        foreach (var ch in GetIntsFromString(str)) Push(ch);
+    }
+    
+    /// <summary>
+    ///     saves the string as the order of the numbers. <br />
+    ///     string -> symbols -> numbers <br />
+    ///     the last character of the string is stored last <br />
+    /// </summary>
+    /// <param name="str"></param>
+    public static int[] GetIntsFromString(string str)
+    {
+        var stringChars = new int[str.Length];
+        for (var index = 0; index < str.Length; index++)
+        {
+            var ch = str[index];
+            stringChars[^(index + 1)] = ch;
+        }
+
+        return stringChars;
     }
 }

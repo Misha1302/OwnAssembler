@@ -11,7 +11,7 @@ public class EqualsCommand : BaseBinaryCommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
+    protected override int ExecuteBinaryCommand(int leftValue, int rightValue)
     {
         return Convert.ToInt32(leftValue.Equals(rightValue));
     }

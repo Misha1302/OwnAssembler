@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Connector;
 
 namespace OwnAssembler.Assembler;
 
@@ -23,16 +24,10 @@ public class Lexer
         { "nop", Kind.Nop },
         { "exit", Kind.Exit },
 
-        { "converttostring", Kind.ConvertToString },
-        { "converttoint", Kind.ConvertToInt },
-        { "converttodouble", Kind.ConvertToDouble },
-        { "converttobool", Kind.ConvertToBool },
-        { "converttochar", Kind.ConvertToChar },
-        
         { "output", Kind.Output },
         { "readkey", Kind.ReadKey },
         { "readline", Kind.ReadLine },
-        
+
         { "push", Kind.Push },
         { "pop", Kind.Pop },
 
@@ -71,34 +66,41 @@ public class Lexer
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public List<Token> GetTokens(Kind[]? ignoredTokenKinds = null)
     {
-        var token = new Token(Kind.Unknown, "");
-        var tokens = new List<Token>();
-
         ignoredTokenKinds ??= new[] { Kind.Whitespace, Kind.Eof };
 
-        while (token.TokenKind != Kind.Eof)
-        {
-            token = GetNextToken();
-            if (!ignoredTokenKinds.Contains(token.TokenKind))
-                tokens.Add(token);
-        }
-
-        return tokens;
+        var returnValue= GetTokensInternal().TakeWhile(token => token.TokenKind != Kind.Eof)
+            .Where(token => !ignoredTokenKinds.Contains(token.TokenKind)).ToList();
+        
+        return returnValue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    private Token GetNextToken()
+    private IEnumerable<Token> GetTokensInternal()
     {
         while (true)
         {
+            whilePoint:
             _position++;
 
-            if (_code.Length <= _position || _code[_position] == '\0') return new Token(Kind.Eof, '\0');
+            if (_code.Length <= _position || _code[_position] == '\0')
+            {
+                yield return new Token(Kind.Eof, '\0');
+                continue;
+            }
 
             var currentChar = _code[_position];
 
-            if (currentChar == '\n') return new Token(Kind.NewLine, "\n");
-            if (char.IsWhiteSpace(currentChar)) return new Token(Kind.Whitespace, currentChar);
+            if (currentChar == '\n')
+            {
+                yield return new Token(Kind.NewLine, "\n");
+                continue;
+            }
+
+            if (char.IsWhiteSpace(currentChar))
+            {
+                yield return new Token(Kind.Whitespace, currentChar);
+                continue;
+            }
 
             switch (currentChar)
             {
@@ -107,25 +109,28 @@ public class Lexer
                     var value = _code[(_position + 1)..(_code[(_position + 1)..].IndexOf('"') + _position + 1)];
                     _position += value.Length + 1;
                     value = Regex.Unescape(value);
-                    return new Token(Kind.String, value, value);
+                    var values = CpuStack.GetIntsFromString(value);
+                    foreach (var v in values) yield return new Token(Kind.Int, v.ToString(), v);
+                    goto whilePoint;
                 }
                 case '\'':
                 {
                     _position++;
                     var ch = _code[_position];
                     _position++;
-                    return new Token(Kind.Char, ch, ch);
+                    yield return new Token(Kind.Char, ch, ch);
+                    goto whilePoint;
                 }
                 case ';':
                 {
                     while (_code[_position] != '\n')
                     {
                         _position++;
-                        if (_code[_position] == '\0') return new Token(Kind.Eof, '\0');
+                        if (_code[_position] == '\0') yield return new Token(Kind.Eof, '\0');
                     }
 
                     _position--;
-                    continue;
+                    goto whilePoint;
                 }
             }
 
@@ -134,23 +139,17 @@ public class Lexer
                 var number = new StringBuilder();
 
                 var ch = _code[_position];
-                var ifDouble = false;
                 do
                 {
-                    if (ch != '_')
-                    {
-                        if (ch == '.') ifDouble = true;
-                        number.Append(ch);
-                    }
+                    if (ch != '_') number.Append(ch);
 
                     _position++;
                 } while (_code.Length > _position && (char.IsNumber(ch = _code[_position]) || ch is '_' or '.'));
 
                 _position--;
                 var numberStr = number.ToString();
-                return ifDouble
-                    ? new Token(Kind.Double, numberStr, Convert.ToDouble(numberStr.Replace('.', ',')))
-                    : new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr));
+                yield return new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr));
+                goto whilePoint;
             }
 
             foreach (var commandPair in _commands.Where(commandPair =>
@@ -162,14 +161,17 @@ public class Lexer
 
                     _position += commandPair.Key.Length - 1;
 
-                    return new Token(commandPair.Value, commandPair.Key);
+                    yield return new Token(commandPair.Value, commandPair.Key);
+                    goto whilePoint;
                 }
 
                 _position += commandPair.Key.Length - 1;
-                return new Token(commandPair.Value, commandPair.Key);
+                yield return new Token(commandPair.Value, commandPair.Key);
+                goto whilePoint;
             }
 
-            return new Token(Kind.Unknown, currentChar);
+            yield return new Token(Kind.Unknown, currentChar);
+            goto whilePoint;
         }
     }
 }

@@ -2,7 +2,6 @@
 using Connector;
 using OwnAssembler.Assembler.LowLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
-using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
@@ -26,8 +25,6 @@ public class IfCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public IEnumerable<ICommand> Compile()
     {
-        yield return new ToInt32Command();
-
         yield return new CopyCommand();
         yield return new PushCommand(1);
         yield return new AddCommand();

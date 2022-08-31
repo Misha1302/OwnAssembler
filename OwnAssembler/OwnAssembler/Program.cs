@@ -11,7 +11,12 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        // to do debug logs
+        //TODO: add bit operations
+        //TODO: add shifts
+        //TODO: optimization of multiplication and division when compiling to bytecode
+        //TODO: convert stack to numbers and expand structures like string
+        
+        //DOING NOW: convert stack to numbers and expand structures like string
         OptimizeApplication();
         Start(GetParameters(args));
     }

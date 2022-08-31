@@ -17,7 +17,7 @@ public abstract class BaseBinaryCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
-        stack.Push(ExecuteBinaryCommand(stack.Pop()!, stack.Pop()!));
+        stack.Push(ExecuteBinaryCommand(stack.Pop(), stack.Pop()));
 
         currentCommandIndex++;
     }
@@ -28,5 +28,5 @@ public abstract class BaseBinaryCommand : ICommand
         Console.Write($"{_commandName}");
     }
 
-    protected abstract object? ExecuteBinaryCommand(object leftValue, object rightValue);
+    protected abstract int ExecuteBinaryCommand(int leftValue, int rightValue);
 }

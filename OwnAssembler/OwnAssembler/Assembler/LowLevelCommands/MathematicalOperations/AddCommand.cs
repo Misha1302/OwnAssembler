@@ -11,16 +11,11 @@ public class AddCommand : BaseBinaryCommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
+    protected override int ExecuteBinaryCommand(int leftValue, int rightValue)
     {
         unchecked
         {
-            return leftValue switch
-            {
-                double leftDouble when rightValue is double rightDouble => leftDouble + rightDouble,
-                string leftStr when rightValue is string rightStr => leftStr + rightStr,
-                _ => Convert.ToInt32(leftValue) + Convert.ToInt32(rightValue)
-            };
+            return leftValue + leftValue;
         }
     }
 }

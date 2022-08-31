@@ -96,9 +96,9 @@ public class CpuApplication
         ramLogString.Append($"{_commandIndex}".PadRight(4) + "| ");
 
         for (var i = 0; i < _cpuStack.Count; i++)
-            stackLogString.Append($"{i}: {Regex.Escape(_cpuStack[i]?.ToString() ?? string.Empty)}".PadRight(20));
+            stackLogString.Append($"{i}: {Regex.Escape(_cpuStack[i].ToString())}".PadRight(20));
         foreach (var pair in Ram.RamDictionary)
-            stackLogString.Append($"{pair.Key}: {Regex.Escape(pair.Value?.ToString() ?? string.Empty)}".PadRight(20));
+            stackLogString.Append($"{pair.Key}: {Regex.Escape(pair.Value.ToString())}".PadRight(20));
 
         using (var fs = File.AppendText("stackLog.txt"))
         {

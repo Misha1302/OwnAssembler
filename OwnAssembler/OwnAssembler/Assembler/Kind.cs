@@ -33,19 +33,11 @@ public enum Kind
     Call,
     Ret,
 
-    ConvertToDouble,
-    ConvertToInt,
-    ConvertToString,
-    ConvertToBool,
-    ConvertToChar,
-
     Invoke,
     Import,
 
 
     Int,
-    String,
-    Double,
 
 
     Eof,

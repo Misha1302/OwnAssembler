@@ -6,10 +6,10 @@ public class Token
 {
     public readonly string Text;
     public readonly Kind TokenKind;
-    public readonly object? Value;
+    public readonly int? Value;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public Token(Kind tokenKind, string text, object? value = null)
+    public Token(Kind tokenKind, string text, int? value = null)
     {
         TokenKind = tokenKind;
         Text = text;
@@ -17,7 +17,7 @@ public class Token
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public Token(Kind tokenKind, char text, object? value = null)
+    public Token(Kind tokenKind, char text, int? value = null)
     {
         TokenKind = tokenKind;
         Text = text.ToString();

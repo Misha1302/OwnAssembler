@@ -11,8 +11,8 @@ public class GreaterThanCommand : BaseBinaryCommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
+    protected override int ExecuteBinaryCommand(int leftValue, int rightValue)
     {
-        return Convert.ToDouble(leftValue) > Convert.ToDouble(rightValue);
+        return leftValue > rightValue ? 1 : 0;
     }
 }
