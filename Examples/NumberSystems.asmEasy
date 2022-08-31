@@ -1,0 +1,31 @@
+push 0xFF
+push 0b11111111
+
+equals
+
+push 0b11111111
+push 255
+
+equals
+
+and
+
+
+if
+	push "0xFF = 0b11111111 and 0b11111111 = 255\n"
+else
+	push "0xFF != 0b11111111 and 0b11111111 = 255\n"
+endif
+
+push 1
+output
+
+
+; C# realisation:
+;
+; string outputStr; 
+; if(0xFF == 0b11111111 && 0b11111111 == 255)
+; 	outputStr = "0xFF = 0b11111111 and 0b11111111 = 255\n";
+; else
+; 	outputStr = "0xFF != 0b11111111 and 0b11111111 = 255\n";
+; Console.WriteLine(outputStr);
