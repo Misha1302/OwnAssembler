@@ -1,4 +1,4 @@
-﻿namespace OwnAssembler.Assembler.LowLevelCommands.Dlls;
+﻿namespace OwnAssembler.Assembler;
 
 public class RefCurrentCommandIndex
 {

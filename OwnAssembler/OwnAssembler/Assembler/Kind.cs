@@ -41,11 +41,21 @@ public enum Kind
 
     Invoke,
     Import,
-
-
+    
+    And,
+    Or,
+    Not,
+    Xor,
+    Division,
+    Multiplication,
+    ShiftRight,
+    ShiftLeft,
+    
+    
     Int,
     String,
     Double,
+    Char,
 
 
     Eof,
@@ -53,5 +63,4 @@ public enum Kind
     Unknown,
     NewLine,
     ReadLine,
-    Char
 }

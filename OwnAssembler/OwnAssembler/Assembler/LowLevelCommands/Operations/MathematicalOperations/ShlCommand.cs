@@ -1,18 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.Assembler.LowLevelCommands;
+namespace OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 
 [Serializable]
-public class LessThanCommand : BaseBinaryCommand
+public class ShiftLeftCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public LessThanCommand() : base("lt")
+    public ShiftLeftCommand() : base("shl")
     {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
-        return Convert.ToDouble(leftValue) < Convert.ToDouble(rightValue);
+        return (int)rightValue << (int)leftValue;
     }
 }

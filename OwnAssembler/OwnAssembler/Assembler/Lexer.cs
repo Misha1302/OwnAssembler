@@ -28,11 +28,20 @@ public class Lexer
         { "converttodouble", Kind.ConvertToDouble },
         { "converttobool", Kind.ConvertToBool },
         { "converttochar", Kind.ConvertToChar },
-        
+
         { "output", Kind.Output },
         { "readkey", Kind.ReadKey },
         { "readline", Kind.ReadLine },
-        
+
+        { "and", Kind.And },
+        { "or", Kind.Or },
+        { "not", Kind.Not },
+        { "xor", Kind.Xor },
+        { "dev", Kind.Division },
+        { "mul", Kind.Multiplication },
+        { "shr", Kind.ShiftRight },
+        { "shl", Kind.ShiftLeft },
+
         { "push", Kind.Push },
         { "pop", Kind.Pop },
 
@@ -130,28 +139,7 @@ public class Lexer
             }
 
             if (currentChar == '-' || char.IsNumber(currentChar))
-            {
-                var number = new StringBuilder();
-
-                var ch = _code[_position];
-                var ifDouble = false;
-                do
-                {
-                    if (ch != '_')
-                    {
-                        if (ch == '.') ifDouble = true;
-                        number.Append(ch);
-                    }
-
-                    _position++;
-                } while (_code.Length > _position && (char.IsNumber(ch = _code[_position]) || ch is '_' or '.'));
-
-                _position--;
-                var numberStr = number.ToString();
-                return ifDouble
-                    ? new Token(Kind.Double, numberStr, Convert.ToDouble(numberStr.Replace('.', ',')))
-                    : new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr));
-            }
+                return GetNextNumberToken();
 
             foreach (var commandPair in _commands.Where(commandPair =>
                          _code[_position..].IndexOf(commandPair.Key, StringComparison.Ordinal) == 0))
@@ -172,4 +160,64 @@ public class Lexer
             return new Token(Kind.Unknown, currentChar);
         }
     }
+
+    private Token GetNextNumberToken()
+    {
+        switch (_code[_position + 1])
+        {
+            case 'x':
+                _position += 2;
+                return GetNextHexToken();
+            case 'b':
+                _position += 2;
+                return GetNextBinaryToken();
+            default:
+                return GetNextDecimalToken();
+        }
+    }
+
+    private Token GetNextHexToken()
+    {
+        const int numberBase = 16;
+        var validCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        return GetNextNumberToken(numberBase, validCharacters);
+    }
+
+    private Token GetNextBinaryToken()
+    {
+        const int numberBase = 2;
+        var validCharacters = new[] { '0', '1' };
+        return GetNextNumberToken(numberBase, validCharacters);
+    }
+
+    private Token GetNextNumberToken(int numberBase, char[] validCharacters)
+    {
+        var number = new StringBuilder();
+        var ch = _code[_position];
+
+        do
+        {
+            number.Append(ch);
+            _position++;
+        } while (_code.Length > _position && validCharacters.Contains(ch = _code[_position]));
+
+        _position--;
+
+        var numberStr = number.ToString();
+        return new Token(Kind.Int, numberStr, Convert.ToInt32(numberStr, numberBase));
+    }
+
+    private Token GetNextDecimalToken()
+    {
+        const int numberBase = 10;
+        var validCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        return GetNextNumberToken(numberBase, validCharacters);
+    }
+}
+
+public enum NumberType
+{
+    Decimal,
+    Hex,
+    Binary
 }

@@ -1,12 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
+namespace OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 
 [Serializable]
-public class SubtractCommand : BaseBinaryCommand
+public class AddCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public SubtractCommand() : base("sub")
+    public AddCommand() : base("add")
     {
     }
 
@@ -15,11 +15,7 @@ public class SubtractCommand : BaseBinaryCommand
     {
         unchecked
         {
-            return leftValue switch
-            {
-                double leftDouble when rightValue is double rightDouble => leftDouble - rightDouble,
-                _ => Convert.ToInt32(leftValue) - Convert.ToInt32(rightValue)
-            };
+            return (int)leftValue + (int)rightValue;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Connector;
 using OwnAssembler.Assembler.LowLevelCommands;
-using OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
+using OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;

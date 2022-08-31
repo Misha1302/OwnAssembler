@@ -9,8 +9,6 @@ A pseudo programming language similar to assembler
 О решении (solution):
 - Проект написан на версии CSharp 10
 - Платформа net core
-- 35 классов
-- 3 проекта (project)
 
 ---
 О синтаксисе:
@@ -52,39 +50,48 @@ A pseudo programming language similar to assembler
 - using OwnAssembler.CentralProcessingUnit;
 
 ---
-Все команды доступные на версии v0.3 (регистр команд не важен):
-- "add"
-- "equals"
-- "gt"
-- "lt"
-- "sub"
-- "jmp"
-- "clear"
-- "push"
-- "pop"
-- "output"
-- "readkey"
-- "readline"
-- "if"
-- "else"
-- "endif"
-- "ramread"
-- "ramwrite"
-- "setmark"
-- "goto"
-- "call"
-- "ret"
-- "gettimems"
-- "exit"
-- "import"
-- "invoke"
-- "copy"
-- "converttostring"
-- "converttoint"
-- "converttodouble"
-- "converttobool"
-- "converttochar"
-- "nop"
+Все команды доступные на версии v0.4 (регистр команд не важен):
+- add  
+- equals  
+- gt  
+- lt  
+- sub  
+- jmp  
+- clear  
+- gettimems  
+- copy  
+- setpriority  
+- nop  
+- exit  
+- converttostring  
+- converttoint  
+- converttodouble  
+- converttobool  
+- converttochar  
+- output  
+- readkey  
+- readline  
+- and  
+- or  
+- not  
+- xor  
+- dev  
+- mul  
+- shr  
+- shl  
+- push  
+- pop  
+- if  
+- else  
+- endif  
+- ramread  
+- ramwrite  
+- setmark  
+- goto  
+- call  
+- ret  
+- import  
+- invoke
 
 ---
 Комментарии:
@@ -92,14 +99,14 @@ A pseudo programming language similar to assembler
 
 ---
 Debug mode:
-- чтобы включить debug mode, нужно запустить ассемблер с аргументом: "-debug true"
+- чтобы включить debug mode, нужно запустить ассемблер с аргументом:  "-debug true"
 - логи стека хранятся в файле "stackLog.txt", в директории с программой
 - логи RAM хранятся в файле "stackLog.txt", в директории с программой
 - Хранение логов:
-	 - Пример - "5   | 0: Привет"   
+	 - Пример: `5   | 0: Hello`
 	 - 5 - номер команды
 	 - 0 - номер регистра
-	 - "Привет" - значение в регистре
+	 - "Hello" - значение в регистре
 
 ---
 Мои контакты:
@@ -107,6 +114,5 @@ telegram - @Micodiy
 vk - [Миша Разаков (vk.com)](https://vk.com/misha13022008)
 discord - Разаков Миша#7375
 
-
 ---
-**Readme написан под версию v0.37**
+**Readme написан под версию v0.4**

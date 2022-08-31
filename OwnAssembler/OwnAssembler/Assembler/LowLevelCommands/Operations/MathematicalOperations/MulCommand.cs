@@ -1,18 +1,21 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.Assembler.LowLevelCommands;
+namespace OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 
 [Serializable]
-public class EqualsCommand : BaseBinaryCommand
+public class MultiplicationCommand : BaseBinaryCommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public EqualsCommand() : base("eq")
+    public MultiplicationCommand() : base("mul")
     {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
-        return Convert.ToInt32(leftValue.Equals(rightValue));
+        unchecked
+        {
+            return (int)leftValue * (int)rightValue;
+        }
     }
 }

@@ -3,19 +3,18 @@ using Connector;
 using OwnAssembler.Assembler.HighLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands.Dlls;
-using OwnAssembler.Assembler.LowLevelCommands.MathematicalOperations;
+using OwnAssembler.Assembler.LowLevelCommands.Operations.LogicalOperations;
+using OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
 namespace OwnAssembler.Assembler;
 
 public static class CompilerToBytecode
 {
-    private static readonly string RamMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-
-
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void Compile(string code, List<ICommand> commands)
     {
+        var ramMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
         var lexer = new Lexer(code);
         var tokens = lexer.GetTokens();
 
@@ -47,6 +46,38 @@ public static class CompilerToBytecode
                         break;
                     case Kind.Add:
                         commands.Add(new AddCommand());
+                        index++;
+                        break;
+                    case Kind.And:
+                        commands.Add(new AndCommand());
+                        index++;
+                        break;
+                    case Kind.Or:
+                        commands.Add(new OrCommand());
+                        index++;
+                        break;
+                    case Kind.Not:
+                        commands.Add(new NotCommand());
+                        index++;
+                        break;
+                    case Kind.Xor:
+                        commands.Add(new XorCommand());
+                        index++;
+                        break;
+                    case Kind.Division:
+                        commands.Add(new DivisionCommand());
+                        index++;
+                        break;
+                    case Kind.Multiplication:
+                        commands.Add(new MultiplicationCommand());
+                        index++;
+                        break;
+                    case Kind.ShiftRight:
+                        commands.Add(new ShiftRightCommand());
+                        index++;
+                        break;
+                    case Kind.ShiftLeft:
+                        commands.Add(new ShiftLeftCommand());
                         index++;
                         break;
                     case Kind.GetTimeInMilliseconds:
@@ -149,7 +180,7 @@ public static class CompilerToBytecode
                         var markName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
                         commands.Add(new PushCommand(markName));
-                        commands.Add(new RamWriteCommand(RamMarkName));
+                        commands.Add(new RamWriteCommand(ramMarkName));
                         commands.Add(new PopCommand());
 
                         commands.Add(new PushCommand(arg1));
@@ -159,7 +190,7 @@ public static class CompilerToBytecode
                         index = startIndex + 1;
                         break;
                     case Kind.Ret:
-                        commands.Add(new RamReadCommand(RamMarkName));
+                        commands.Add(new RamReadCommand(ramMarkName));
                         commands.Add(new GotoCommand(commands));
                         index++;
                         break;
