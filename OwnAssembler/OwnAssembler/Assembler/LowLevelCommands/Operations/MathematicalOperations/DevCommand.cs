@@ -13,9 +13,8 @@ public class DivisionCommand : BaseBinaryCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
-        unchecked
-        {
-            return (int)leftValue / (int)rightValue;
-        }
+        if (leftValue is double leftDouble && rightValue is double rightDouble)
+            return leftDouble / rightDouble;
+        return (int)leftValue / (int)rightValue;
     }
 }

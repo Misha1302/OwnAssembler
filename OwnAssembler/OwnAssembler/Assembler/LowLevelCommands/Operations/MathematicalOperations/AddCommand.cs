@@ -15,6 +15,8 @@ public class AddCommand : BaseBinaryCommand
     {
         unchecked
         {
+            if (leftValue is double leftDouble && rightValue is double rightDouble)
+                return leftDouble + rightDouble;
             return (int)leftValue + (int)rightValue;
         }
     }
