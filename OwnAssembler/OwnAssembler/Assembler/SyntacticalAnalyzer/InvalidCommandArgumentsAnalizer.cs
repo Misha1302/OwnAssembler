@@ -1,25 +1,18 @@
 ﻿using OwnAssembler.Assembler.Tokens;
 
-namespace OwnAssembler.Assembler.SyntacticalAnalyzerDir;
+namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 
-public static class SyntacticalAnalyzer
+public static class InvalidCommandArgumentsAnalyzer
 {
-    #region public methods
-
-    public static IReadOnlyList<SyntaxError> CheckForSyntaxErrors(IReadOnlyList<Token> tokens)
+    private static readonly IReadOnlyList<Kind> ArgumentTypes = new List<Kind>
     {
-        var errors = new List<SyntaxError>();
-
-        errors.AddRange(CheckForCommandArguments(tokens));
-        errors.AddRange(CheckForLinkedWords(tokens));
-
-        return errors;
-    }
-
-    #endregion
-
-    #region variables
-
+        Kind.String,
+        Kind.Int,
+        Kind.Char,
+        Kind.Double
+    };
+    
+    
     /// <summary>
     ///     An array of commands and valid arguments to them. <br />
     ///     Arguments are passed as Kind[] and the type of the argument (string, number, etc.). <br />
@@ -71,71 +64,8 @@ public static class SyntacticalAnalyzer
             { Kind.NewLine, null },
             { Kind.Whitespace, null }
         };
-
-    private static readonly IReadOnlyList<Kind> ArgumentTypes = new List<Kind>
-    {
-        Kind.String,
-        Kind.Int,
-        Kind.Char,
-        Kind.Double
-    };
-
-    private static readonly IReadOnlyList<(Kind start, Kind end)> LinkingWords = new List<(Kind start, Kind end)>
-    {
-        (Kind.If, Kind.EndIf)
-    };
-
-    #endregion
-
-    #region private methods
-
-    private static IEnumerable<SyntaxError> CheckForLinkedWords(IEnumerable<Token> tokens)
-    {
-        var errors = new List<SyntaxError>();
-
-        var linkingWordsStart = LinkingWords.Select(x => x.start).ToArray();
-        var linkingWordsEnd = LinkingWords.Select(x => x.end).ToArray();
-
-        const int line = 0;
-        var unclosedWords = CheckForLinkedWordsInternal(tokens, line, linkingWordsStart, linkingWordsEnd, errors);
-
-        errors.AddRange(unclosedWords.Select(unclosedWord =>
-            new SyntaxError($"{unclosedWord.line}. Not closed word: {unclosedWord.text}")));
-        return errors;
-    }
-
-    private static List<(int line, string text)> CheckForLinkedWordsInternal(IEnumerable<Token> tokens, int line,
-        Kind[] linkingWordsStart, IReadOnlyList<Kind> linkingWordsEnd, ICollection<SyntaxError> errors)
-    {
-        var unclosedWords = new List<(int line, string text)>();
-        var expectedWords = new List<Kind>();
-
-        foreach (var token in tokens)
-        {
-            if (token.TokenKind == Kind.NewLine) line++;
-
-            if (linkingWordsStart.Contains(token.TokenKind))
-            {
-                unclosedWords.Add((line, token.Text));
-                expectedWords.Add(linkingWordsEnd[unclosedWords.Count - 1]);
-            }
-
-            if (!linkingWordsEnd.Contains(token.TokenKind)) continue;
-
-            if (unclosedWords.Count == 0)
-            {
-                errors.Add(new SyntaxError($"{line}. Nothing to close"));
-                continue;
-            }
-
-            unclosedWords.RemoveAt(unclosedWords.Count - 1);
-            expectedWords.RemoveAt(expectedWords.Count - 1);
-        }
-
-        return unclosedWords;
-    }
-
-    private static IEnumerable<SyntaxError> CheckForCommandArguments(IReadOnlyList<Token> tokens)
+    
+    public static IEnumerable<SyntaxError> GetInvalidCommandArgumentsErrors(IReadOnlyList<Token> tokens)
     {
         var errors = new List<SyntaxError>();
         var line = 0;
@@ -162,10 +92,10 @@ public static class SyntacticalAnalyzer
         return errors;
     }
 
-    private static int CheckMethodArguments(IReadOnlyList<Token> tokens, int index, object?[] args, int startIndex,
+    private static int CheckMethodArguments(IReadOnlyList<Token> tokens, int index, IReadOnlyList<object?> args, int startIndex,
         ICollection<SyntaxError> errors, int line)
     {
-        for (++index; index < args.Length + startIndex + 1; index++)
+        for (++index; index < args.Count + startIndex + 1; index++)
         {
             if (tokens.Count <= index)
             {
@@ -192,6 +122,4 @@ public static class SyntacticalAnalyzer
 
         return index;
     }
-
-    #endregion
 }

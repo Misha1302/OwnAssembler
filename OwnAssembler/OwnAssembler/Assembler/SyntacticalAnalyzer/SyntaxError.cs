@@ -1,4 +1,4 @@
-namespace OwnAssembler.Assembler.SyntacticalAnalyzerDir;
+namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 
 public readonly struct SyntaxError
 {

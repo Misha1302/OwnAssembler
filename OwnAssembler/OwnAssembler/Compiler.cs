@@ -2,7 +2,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using Connector;
 using OwnAssembler.Assembler;
-using OwnAssembler.Assembler.SyntacticalAnalyzerDir;
+using OwnAssembler.Assembler.SyntacticalAnalyzer;
 using OwnAssembler.Assembler.Tokens;
 using Processor = Cpu.CentralProcessingUnit.Cpu;
 
@@ -46,7 +46,13 @@ public static class Compiler
     {
         var syntaxErrors = SyntacticalAnalyzer.CheckForSyntaxErrors(tokens);
 
-        if (syntaxErrors.Count == 0) return false;
+        if (syntaxErrors.Count == 0)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Compiled successfully");
+            Console.ResetColor();
+            return false;
+        }
 
         Console.ForegroundColor = ConsoleColor.Red;
         foreach (var syntaxError in syntaxErrors) Console.WriteLine(syntaxError.ErrorMessage);

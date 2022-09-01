@@ -14,6 +14,8 @@ public static class Program
         OptimizeApplication();
         var parameters = Compiler.GetParameters(args);
         Compiler.StartNewApplication(parameters);
+        Compiler.StartNewApplication(parameters);
+        Compiler.StartNewApplication(parameters);
     }
     
     private static void OptimizeApplication()
