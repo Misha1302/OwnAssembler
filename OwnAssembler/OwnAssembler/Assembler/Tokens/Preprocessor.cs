@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace OwnAssembler.Assembler;
+namespace OwnAssembler.Assembler.Tokens;
 
 public static class Preprocessor
 {

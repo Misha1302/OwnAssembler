@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace OwnAssembler.Assembler;
+namespace OwnAssembler.Assembler.Tokens;
 
 public class Lexer
 {
@@ -26,7 +26,6 @@ public class Lexer
         { "converttostring", Kind.ConvertToString },
         { "converttoint", Kind.ConvertToInt },
         { "converttodouble", Kind.ConvertToDouble },
-        { "converttobool", Kind.ConvertToBool },
         { "converttochar", Kind.ConvertToChar },
 
         { "output", Kind.Output },

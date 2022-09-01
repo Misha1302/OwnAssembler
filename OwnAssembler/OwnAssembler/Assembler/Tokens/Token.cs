@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.Assembler;
+namespace OwnAssembler.Assembler.Tokens;
 
 public class Token
 {

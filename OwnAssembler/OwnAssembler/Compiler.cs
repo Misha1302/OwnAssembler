@@ -2,6 +2,8 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using Connector;
 using OwnAssembler.Assembler;
+using OwnAssembler.Assembler.SyntacticalAnalyzerDir;
+using OwnAssembler.Assembler.Tokens;
 using Processor = Cpu.CentralProcessingUnit.Cpu;
 
 namespace OwnAssembler;
@@ -24,14 +26,34 @@ public static class Compiler
 
         if (needsCompilation)
         {
-            CompilerToBytecode.Compile(code, commands);
+            var lexer = new Lexer(code);
+            var tokens = lexer.GetTokens();
+            if (CheckForSyntaxErrors(tokens)) return;
+
+            CompilerToBytecode.Compile(code, commands, tokens);
             SerializeByteCode(byteCodeSave, byteCode);
+            Processor.StartNewApplication(byteCode, debugMode);
+
+            return;
         }
 
         DeserializeByteCode(byteCodeRead, out byteCode);
 
         Processor.StartNewApplication(byteCode, debugMode);
     }
+
+    private static bool CheckForSyntaxErrors(IReadOnlyList<Token> tokens)
+    {
+        var syntaxErrors = SyntacticalAnalyzer.CheckForSyntaxErrors(tokens);
+
+        if (syntaxErrors.Count == 0) return false;
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        foreach (var syntaxError in syntaxErrors) Console.WriteLine(syntaxError.ErrorMessage);
+        Console.WriteLine("Compilation failed");
+        return true;
+    }
+
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static Dictionary<string, object> GetParameters(IReadOnlyList<string> args)
@@ -72,6 +94,7 @@ public static class Compiler
 
     // there is no point in worrying about security in this context
 #pragma warning disable SYSLIB0011
+#warning if you need the security of the stored bytecode, then don't forget to change the serialization and deserialization
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void SerializeByteCode(string byteCodePath, ByteCode byteCode)
     {

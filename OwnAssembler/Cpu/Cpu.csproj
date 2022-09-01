@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Connector\Connector.csproj"/>
+        <ProjectReference Include="..\Connector\Connector.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace OwnAssembler.Assembler;
+namespace OwnAssembler.Assembler.Tokens;
 
 public enum Kind
 {
@@ -36,7 +36,6 @@ public enum Kind
     ConvertToDouble,
     ConvertToInt,
     ConvertToString,
-    ConvertToBool,
     ConvertToChar,
 
     Invoke,

@@ -6,9 +6,14 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        // TODO: syntactical analyzer
+        // TODO: and compiler optimization
+        // optimizations:
+        // var % 2 != 0 -> var & 1 == 1
+        // 2 * 32 -> 2 << 5
+        // fixed
         OptimizeApplication();
-        Compiler.StartNewApplication(Compiler.GetParameters(args));
+        var parameters = Compiler.GetParameters(args);
+        Compiler.StartNewApplication(parameters);
     }
     
     private static void OptimizeApplication()

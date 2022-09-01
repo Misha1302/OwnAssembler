@@ -6,17 +6,16 @@ using OwnAssembler.Assembler.LowLevelCommands.Dlls;
 using OwnAssembler.Assembler.LowLevelCommands.Operations.LogicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
+using OwnAssembler.Assembler.Tokens;
 
 namespace OwnAssembler.Assembler;
 
 public static class CompilerToBytecode
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static void Compile(string code, List<ICommand> commands)
+    public static void Compile(string code, List<ICommand> commands, IReadOnlyList<Token> tokens)
     {
         var ramMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-        var lexer = new Lexer(code);
-        var tokens = lexer.GetTokens();
 
 
         var ifClauseStartIndex = 0;
@@ -127,13 +126,13 @@ public static class CompilerToBytecode
                         arg1 = tokens[index + 1].Value ??
                                throw new ArgumentException($"The line {line} is missing a function argument");
                         commands.Add(new RamReadCommand((string)arg1));
-                        index+=2;
+                        index += 2;
                         break;
                     case Kind.RamWrite:
                         arg1 = tokens[index + 1].Value ??
                                throw new ArgumentException($"The line {line} is missing a function argument");
                         commands.Add(new RamWriteCommand((string)arg1));
-                        index+=2;
+                        index += 2;
                         break;
                     case Kind.Clear:
                         commands.Add(new ClearStackCommand());
@@ -145,10 +144,6 @@ public static class CompilerToBytecode
                         break;
                     case Kind.ConvertToDouble:
                         commands.Add(new ToDoubleCommand());
-                        index++;
-                        break;
-                    case Kind.ConvertToBool:
-                        commands.Add(new ToBoolCommand());
                         index++;
                         break;
                     case Kind.ConvertToInt:
@@ -216,7 +211,7 @@ public static class CompilerToBytecode
                         arg1 = tokens[index + 1].Value ??
                                throw new ArgumentException($"The line {line} is missing a function argument");
                         commands.Add(new GotoMark((string)arg1));
-                        index+=2;
+                        index += 2;
                         break;
                     case Kind.NewLine:
                         line++;
