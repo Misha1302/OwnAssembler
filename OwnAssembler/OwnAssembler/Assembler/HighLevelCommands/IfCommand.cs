@@ -15,6 +15,8 @@ public class IfCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public IfCommand(List<ICommand> ifClause, List<ICommand> elseClause)
     {
+        ifClause.Insert(0, new PopCommand());
+        elseClause.Insert(0, new PopCommand());
         _ifClause = ifClause;
         _elseClause = elseClause;
     }

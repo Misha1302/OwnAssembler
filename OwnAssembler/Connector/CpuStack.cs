@@ -13,7 +13,10 @@ public class CpuStack
         _stack = new ArrayList(capacity);
     }
 
-    public int Count => _stack.Count;
+    public int Count
+    {
+        get { return _stack.Count; }
+    }
 
     /// <summary>
     /// only use when needed as Cpu Stack is a stack not an array <br/>
@@ -21,8 +24,8 @@ public class CpuStack
     /// </summary>
     public object? this[int index]
     {
-        get => _stack[index];
-        set => _stack[index] = value;
+        get { return _stack[index]; }
+        set { _stack[index] = value; }
     }
 
 

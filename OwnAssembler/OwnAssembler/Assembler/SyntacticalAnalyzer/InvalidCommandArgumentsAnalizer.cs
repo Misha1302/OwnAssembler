@@ -113,14 +113,14 @@ public static class InvalidCommandArgumentsAnalyzer
             {
                 if (!ArgumentTypes.Contains(arg.TokenKind))
                     errors.Add(
-                        new SyntaxError($"{line}. Argument number {argumentIndex} must be of type {argType}"));
+                        new SyntaxError($"{line}. Argument number {argumentIndex} must be of type {argType ?? "\"any\""}"));
 
                 continue;
             }
 
-            argType = (Kind)argType;
-            if (arg.TokenKind != (Kind)argType)
-                errors.Add(new SyntaxError($"{line}. Argument number {argumentIndex} must be of type {argType}"));
+            var argKind = (Kind)argType;
+            if (arg.TokenKind != argKind)
+                errors.Add(new SyntaxError($"{line}. Argument number {argumentIndex} must be of type {argKind}"));
         }
 
         return index;

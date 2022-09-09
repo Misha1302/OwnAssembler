@@ -13,8 +13,11 @@ public class ModCommand : BaseBinaryCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
-        if (leftValue is double leftDouble && rightValue is double rightDouble)
-            return leftDouble % rightDouble;
-        return (int)leftValue % (int)rightValue;
+        return leftValue switch
+        {
+            int leftInt when rightValue is int rightInt => leftInt % rightInt,
+            double leftDouble when rightValue is double rightDouble => leftDouble % rightDouble,
+            _ => (long)leftValue % (long)rightValue
+        };
     }
 }

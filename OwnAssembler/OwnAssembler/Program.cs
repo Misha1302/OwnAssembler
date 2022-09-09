@@ -10,7 +10,7 @@ public static class Program
     }
 
     private static void MainInternal(IReadOnlyList<string> args)
-    {                  
+    {
         OptimizeApplication();
         var parameters = Compiler.GetParameters(args);
         Compiler.StartNewApplication(parameters);

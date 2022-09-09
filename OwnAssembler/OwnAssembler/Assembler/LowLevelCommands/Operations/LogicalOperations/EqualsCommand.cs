@@ -13,6 +13,6 @@ public class EqualsCommand : BaseBinaryCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     protected override object? ExecuteBinaryCommand(object leftValue, object rightValue)
     {
-        return Convert.ToInt32(leftValue.Equals(rightValue));
+        return Convert.ToInt32(Convert.ToDecimal(leftValue).Equals(Convert.ToDecimal(rightValue)));
     }
 }
