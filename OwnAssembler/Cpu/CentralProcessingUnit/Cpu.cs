@@ -14,7 +14,7 @@ public static class Cpu
     {
         Console.OutputEncoding = Encoding.Unicode;
         Console.InputEncoding = Encoding.Unicode;
-        
+
         File.WriteAllText("stackLog.txt", "");
         File.WriteAllText("ramLog.txt", "");
 
@@ -25,9 +25,8 @@ public static class Cpu
     public static void StartNewApplication(ByteCode byteCode, bool debugMode)
     {
         var cpuApplication = new CpuApplication(byteCode, _applicationIndex, debugMode);
-        cpuApplication.OnApplicationStart();
         Applications.Add(_applicationIndex, cpuApplication);
-
+        cpuApplication.OnApplicationStart();
         _applicationIndex++;
     }
 
@@ -45,11 +44,12 @@ public static class Cpu
             CpuTakeOneStep();
     }
 
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void CpuTakeOneStep()
     {
-        var applicationsIEnumerable = Applications.ToArray().Select(pair => pair.Value);
-        foreach (var application in applicationsIEnumerable)
-            application.ApplicationTakeOneStep();
+        var applications = Applications.ToArray();
+        foreach (var application in applications)
+            application.Value.ApplicationTakeOneStep();
     }
 }

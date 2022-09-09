@@ -16,6 +16,6 @@ public class ToCharCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("convert to char");
+        Console.Write("toChar");
     }
 }

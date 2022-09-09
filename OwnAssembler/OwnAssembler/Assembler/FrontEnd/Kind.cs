@@ -1,4 +1,4 @@
-namespace OwnAssembler.Assembler.Tokens;
+namespace OwnAssembler.Assembler.FrontEnd;
 
 public enum Kind
 {
@@ -49,6 +49,7 @@ public enum Kind
     Multiplication,
     ShiftRight,
     ShiftLeft,
+    Mod,
     
     
     Int,
@@ -62,4 +63,7 @@ public enum Kind
     Unknown,
     NewLine,
     ReadLine,
+    
+    
+    Define
 }

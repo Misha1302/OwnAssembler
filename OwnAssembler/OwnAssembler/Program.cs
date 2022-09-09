@@ -6,18 +6,16 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        // TODO: and compiler optimization
-        // optimizations:
-        // var % 2 != 0 -> var & 1 == 1
-        // 2 * 32 -> 2 << 5
-        // fixed
+        MainInternal(args);
+    }
+
+    private static void MainInternal(IReadOnlyList<string> args)
+    {                  
         OptimizeApplication();
         var parameters = Compiler.GetParameters(args);
         Compiler.StartNewApplication(parameters);
-        Compiler.StartNewApplication(parameters);
-        Compiler.StartNewApplication(parameters);
     }
-    
+
     private static void OptimizeApplication()
     {
         Thread.CurrentThread.Priority = ThreadPriority.Highest;

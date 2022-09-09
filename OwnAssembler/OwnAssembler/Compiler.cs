@@ -2,8 +2,8 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using Connector;
 using OwnAssembler.Assembler;
+using OwnAssembler.Assembler.FrontEnd;
 using OwnAssembler.Assembler.SyntacticalAnalyzer;
-using OwnAssembler.Assembler.Tokens;
 using Processor = Cpu.CentralProcessingUnit.Cpu;
 
 namespace OwnAssembler;
@@ -30,14 +30,13 @@ public static class Compiler
             var tokens = lexer.GetTokens();
             if (CheckForSyntaxErrors(tokens)) return;
 
-            CompilerToBytecode.Compile(code, commands, tokens);
+            CompilerToBytecode.Compile(commands, tokens);
             SerializeByteCode(byteCodeSave, byteCode);
-            Processor.StartNewApplication(byteCode, debugMode);
-
-            return;
         }
-
-        DeserializeByteCode(byteCodeRead, out byteCode);
+        else
+        {
+            DeserializeByteCode(byteCodeRead, out byteCode);
+        }
 
         Processor.StartNewApplication(byteCode, debugMode);
     }

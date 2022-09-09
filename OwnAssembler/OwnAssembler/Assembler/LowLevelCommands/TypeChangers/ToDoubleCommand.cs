@@ -16,6 +16,6 @@ public class ToDoubleCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("convert to double");
+        Console.Write("toDouble");
     }
 }

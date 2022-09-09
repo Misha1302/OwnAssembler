@@ -20,6 +20,6 @@ public class ToStringCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("convert to string");
+        Console.Write("toString");
     }
 }

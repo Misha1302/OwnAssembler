@@ -2,14 +2,12 @@
 using Connector;
 using OwnAssembler.Assembler.LowLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
-using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
 
 [Serializable]
 public class IfCommand
 {
-    private readonly string _addressNameStack = DateTimeOffset.Now.ToUnixTimeMilliseconds() + "Stack";
     private readonly List<ICommand> _elseClause;
     private readonly List<ICommand> _ifClause;
 
@@ -17,8 +15,6 @@ public class IfCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public IfCommand(List<ICommand> ifClause, List<ICommand> elseClause)
     {
-        ifClause.Insert(0, new PopCommand());
-        elseClause.Insert(0, new PopCommand());
         _ifClause = ifClause;
         _elseClause = elseClause;
     }
@@ -26,8 +22,6 @@ public class IfCommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public IEnumerable<ICommand> Compile()
     {
-        yield return new ToInt32Command();
-
         yield return new CopyCommand();
         yield return new PushCommand(1);
         yield return new AddCommand();

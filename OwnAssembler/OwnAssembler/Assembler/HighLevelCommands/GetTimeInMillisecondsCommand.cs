@@ -17,6 +17,6 @@ public class GetTimeInMillisecondsCommand : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("getting time in milliseconds");
+        Console.Write("getTimeMs");
     }
 }

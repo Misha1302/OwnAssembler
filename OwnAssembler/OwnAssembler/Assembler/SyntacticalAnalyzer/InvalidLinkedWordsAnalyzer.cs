@@ -1,4 +1,4 @@
-﻿using OwnAssembler.Assembler.Tokens;
+﻿using OwnAssembler.Assembler.FrontEnd;
 
 namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 

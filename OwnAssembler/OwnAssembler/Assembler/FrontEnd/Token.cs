@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
 
-namespace OwnAssembler.Assembler.Tokens;
+namespace OwnAssembler.Assembler.FrontEnd;
 
 public class Token
 {
-    public readonly string Text;
+    public string Text;
     public readonly Kind TokenKind;
     public readonly object? Value;
 

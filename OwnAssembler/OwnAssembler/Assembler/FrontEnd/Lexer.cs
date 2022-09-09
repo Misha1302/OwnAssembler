@@ -2,13 +2,11 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace OwnAssembler.Assembler.Tokens;
+namespace OwnAssembler.Assembler.FrontEnd;
 
 public class Lexer
 {
-    private readonly string _code;
-
-    private readonly Dictionary<string, Kind> _commands = new()
+    private static readonly IReadOnlyDictionary<string, Kind> Commands = new Dictionary<string, Kind>
     {
         { "add", Kind.Add },
         { "equals", Kind.Equals },
@@ -17,19 +15,19 @@ public class Lexer
         { "sub", Kind.Sub },
         { "jmp", Kind.Jmp },
         { "clear", Kind.Clear },
-        { "gettimems", Kind.GetTimeInMilliseconds },
+        { "getTimeMs", Kind.GetTimeInMilliseconds },
         { "copy", Kind.Copy },
-        { "setpriority", Kind.SetPriority },
+        { "setPriority", Kind.SetPriority },
         { "nop", Kind.Nop },
         { "exit", Kind.Exit },
 
-        { "converttostring", Kind.ConvertToString },
-        { "converttoint", Kind.ConvertToInt },
-        { "converttodouble", Kind.ConvertToDouble },
-        { "converttochar", Kind.ConvertToChar },
+        { "toStr", Kind.ConvertToString },
+        { "toInt", Kind.ConvertToInt },
+        { "toDouble", Kind.ConvertToDouble },
+        { "toChar", Kind.ConvertToChar },
 
         { "output", Kind.Output },
-        { "readkey", Kind.ReadKey },
+        { "readKey", Kind.ReadKey },
         { "readline", Kind.ReadLine },
 
         { "and", Kind.And },
@@ -40,6 +38,7 @@ public class Lexer
         { "mul", Kind.Multiplication },
         { "shr", Kind.ShiftRight },
         { "shl", Kind.ShiftLeft },
+        { "mod", Kind.Mod },
 
         { "push", Kind.Push },
         { "pop", Kind.Pop },
@@ -48,21 +47,31 @@ public class Lexer
         { "else", Kind.Else },
         { "endif", Kind.EndIf },
 
-        { "ramread", Kind.RamRead },
-        { "ramwrite", Kind.RamWrite },
+        { "ramRead", Kind.RamRead },
+        { "ramWrite", Kind.RamWrite },
 
-        { "setmark", Kind.SetMark },
+        { "setMark", Kind.SetMark },
         { "goto", Kind.Goto },
 
         { "call", Kind.Call },
         { "ret", Kind.Ret },
 
         { "import", Kind.Import },
-        { "invoke", Kind.Invoke }
+        { "invoke", Kind.Invoke },
+
+
+        { "#define", Kind.Define }
     };
+
+    private readonly string _code;
 
     private int _position = -1;
 
+
+    static Lexer()
+    {
+        Commands = Commands.Select(x => (x.Key.ToLower(), x.Value)).ToDictionary(x => x.Item1, x => x.Value);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public Lexer(string code)
@@ -72,26 +81,43 @@ public class Lexer
 
     /// <summary>
     ///     Gets all tokens from code<br />
-    ///     Eof - end of file (char '\0')
+    ///     Eof - end of file
     /// </summary>
-    /// <param name="ignoredTokenKinds">default value = { Kind.Whitespace, Kind.Eof }</param>
-    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public List<Token> GetTokens(Kind[]? ignoredTokenKinds = null)
+    public List<Token> GetTokens()
     {
         var token = new Token(Kind.Unknown, "");
         var tokens = new List<Token>();
 
-        ignoredTokenKinds ??= new[] { Kind.Whitespace, Kind.Eof };
-
         while (token.TokenKind != Kind.Eof)
         {
             token = GetNextToken();
-            if (!ignoredTokenKinds.Contains(token.TokenKind))
-                tokens.Add(token);
+            tokens.Add(token);
         }
 
+        UnityUnknownTokens(tokens);
+
+        tokens = Preprocessor.PreprocessTokens(tokens);
+        
+        tokens.RemoveAt(tokens.Count - 1); // delete eof
+        
         return tokens;
+    }
+
+    private static void UnityUnknownTokens(IList<Token> tokens)
+    {
+        for (var i = 0; i < tokens.Count; i++)
+        {
+            var startPosition = i;
+            if (tokens[i].TokenKind != Kind.Unknown) continue;
+
+            i++;
+            while (tokens[i].TokenKind == Kind.Unknown)
+            {
+                tokens[startPosition].Text += tokens[i].Text;
+                tokens.RemoveAt(i);
+            }
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
@@ -112,7 +138,8 @@ public class Lexer
             {
                 case '"':
                 {
-                    var value = _code[(_position + 1)..(_code[(_position + 1)..].IndexOf('"') + _position + 1)];
+                    var endIndex = Regex.Match(_code[(_position + 1)..], "(?<!(\\\\))\"").Index + _position + 1;
+                    var value = _code[(_position + 1)..endIndex];
                     _position += value.Length + 1;
                     value = Regex.Unescape(value);
                     return new Token(Kind.String, value, value);
@@ -140,7 +167,7 @@ public class Lexer
             if (currentChar == '-' || char.IsNumber(currentChar))
                 return GetNextNumberToken();
 
-            foreach (var commandPair in _commands.Where(commandPair =>
+            foreach (var commandPair in Commands.Where(commandPair =>
                          _code[_position..].IndexOf(commandPair.Key, StringComparison.Ordinal) == 0))
             {
                 if (_code.Length > _position + commandPair.Key.Length + 1)

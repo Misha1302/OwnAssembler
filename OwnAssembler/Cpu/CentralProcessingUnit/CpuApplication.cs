@@ -32,7 +32,7 @@ public class CpuApplication
     {
         _stopwatch.Stop();
 
-        Console.WriteLine($"Execution time: {_stopwatch.ElapsedMilliseconds / 1000f} sec");
+        Console.WriteLine($"\nExecution time: {_stopwatch.ElapsedMilliseconds / 1000f} sec");
         Cpu.KillApplication(_applicationIndex);
     }
 
@@ -75,6 +75,10 @@ public class CpuApplication
         Console.WriteLine();
     }
 
+    
+    
+    
+    
     private void WriteCommandDebug(IReadOnlyList<ICommand> commands)
     {
         commands[_commandIndex].Dump();
@@ -91,24 +95,34 @@ public class CpuApplication
         var stackLogString = new StringBuilder(512);
         var ramLogString = new StringBuilder(512);
 
-        stackLogString.Append($"{_commandIndex}".PadRight(4) + "| ");
-        ramLogString.Append($"{_commandIndex}".PadRight(4) + "| ");
+        stackLogString.Append($"{_applicationIndex}::{_commandIndex}".PadRight(7) + "| ");
+        ramLogString.Append($"{_applicationIndex}::{_commandIndex}".PadRight(7) + "| ");
 
-        for (var i = 0; i < _cpuStack.Count; i++)
-            stackLogString.Append(
-                $"{i}: {(_cpuStack[i]?.ToString() ?? string.Empty).ToLiteral()}".PadRight(20) + " ");
+        WriteStackLogs(stackLogString);
+        WriteRamLogs(ramLogString);
+    }
+
+    private static void WriteRamLogs(StringBuilder ramLogString)
+    {
         foreach (var pair in Ram.RamDictionary)
-            stackLogString.Append(
-                $"{pair.Key}: {(pair.Value?.ToString() ?? string.Empty).ToLiteral()}".PadRight(20) + " ");
-
-        using (var fs = File.AppendText("stackLog.txt"))
         {
-            fs.WriteLine(stackLogString);
+            var value = ((pair.Value ?? "null").ToString() ?? string.Empty).ToLiteral();
+            ramLogString.Append($"{pair.Key}: {value}::{pair.Value?.GetType().Name}".PadRight(20) + " ");
         }
 
-        using (var fs = File.AppendText("ramLog.txt"))
+        using var fs = File.AppendText("ramLog.txt");
+        fs.WriteLine(ramLogString);
+    }
+
+    private void WriteStackLogs(StringBuilder stackLogString)
+    {
+        for (var i = 0; i < _cpuStack.Count; i++)
         {
-            fs.WriteLine(ramLogString);
+            var value = ((_cpuStack[i] ?? "null").ToString() ?? string.Empty).ToLiteral();
+            stackLogString.Append($"{i}: {value}::{_cpuStack[i]?.GetType().Name}".PadRight(20) + " ");
         }
+
+        using var fs = File.AppendText("stackLog.txt");
+        fs.WriteLine(stackLogString);
     }
 }

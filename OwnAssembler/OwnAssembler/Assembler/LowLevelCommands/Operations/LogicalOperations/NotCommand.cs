@@ -10,6 +10,7 @@ public class NotCommand : ICommand
     public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
     {
         stack.Push(Convert.ToInt32(stack.Pop()) == 1 ? 0 : 1);
+        currentCommandIndex++;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

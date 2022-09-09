@@ -1,23 +1,27 @@
 ﻿using System.Runtime.CompilerServices;
 using Connector;
+using OwnAssembler.Assembler.FrontEnd;
 using OwnAssembler.Assembler.HighLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands;
 using OwnAssembler.Assembler.LowLevelCommands.Dlls;
 using OwnAssembler.Assembler.LowLevelCommands.Operations.LogicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.Operations.MathematicalOperations;
 using OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
-using OwnAssembler.Assembler.Tokens;
 
 namespace OwnAssembler.Assembler;
 
 public static class CompilerToBytecode
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static void Compile(string code, List<ICommand> commands, IReadOnlyList<Token> tokens)
+    public static void Compile(List<ICommand> commands, List<Token> tokens)
     {
         var ramMarkName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
+        CompileCodeInternal(commands, tokens, ramMarkName);
+    }
 
+    private static void CompileCodeInternal(List<ICommand> commands, IReadOnlyList<Token> tokens, string ramMarkName)
+    {
         var ifClauseStartIndex = 0;
         var ifClauseEndIndex = 0;
         var elseClauseBool = false;
@@ -45,6 +49,10 @@ public static class CompilerToBytecode
                         break;
                     case Kind.Add:
                         commands.Add(new AddCommand());
+                        index++;
+                        break;
+                    case Kind.Mod:
+                        commands.Add(new ModCommand());
                         index++;
                         break;
                     case Kind.And:
@@ -173,7 +181,7 @@ public static class CompilerToBytecode
                                throw new ArgumentException($"The line {line} is missing a function argument");
                         var startIndex = index;
                         var markName = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-
+                        Thread.Sleep(1);
                         commands.Add(new PushCommand(markName));
                         commands.Add(new RamWriteCommand(ramMarkName));
                         commands.Add(new PopCommand());

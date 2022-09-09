@@ -1,0 +1,13 @@
+#define "положи" "push"
+#define "пять" "5"
+#define "один" "1"
+#define "сложи" "add"
+#define "напиши" "output"
+#define "напишиПривет" "push \"Привет!\"\npush 1\noutput"
+
+положи пять
+положи один
+сложи
+
+положи один
+напиши

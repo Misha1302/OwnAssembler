@@ -16,6 +16,6 @@ public class ToInt32Command : ICommand
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public void Dump()
     {
-        Console.Write("convert to Int32");
+        Console.Write("toInt32");
     }
 }

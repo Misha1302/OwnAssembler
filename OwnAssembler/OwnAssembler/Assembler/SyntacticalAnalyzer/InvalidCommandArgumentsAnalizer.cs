@@ -1,4 +1,4 @@
-﻿using OwnAssembler.Assembler.Tokens;
+﻿using OwnAssembler.Assembler.FrontEnd;
 
 namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 
@@ -11,19 +11,20 @@ public static class InvalidCommandArgumentsAnalyzer
         Kind.Char,
         Kind.Double
     };
-    
-    
+
+
     /// <summary>
     ///     An array of commands and valid arguments to them. <br />
     ///     Arguments are passed as Kind[] and the type of the argument (string, number, etc.). <br />
     ///     If the command is followed by an argument of any type, then instead of the type, you can put the Null value <br />
     /// </summary>
-    private static readonly IReadOnlyDictionary<Kind, object?> ValidCommandsArguments =
-        new Dictionary<Kind, object?>
+    private static readonly IReadOnlyDictionary<Kind, object?[]?> ValidCommandsArguments =
+        new Dictionary<Kind, object?[]?>
         {
+            { Kind.Define, new object?[] { Kind.String, Kind.String } },
             { Kind.Add, null },
             { Kind.And, null },
-            { Kind.Call, null },
+            { Kind.Call, new object?[] { Kind.String } },
             { Kind.Clear, null },
             { Kind.Copy, null },
             { Kind.Division, null },
@@ -48,23 +49,25 @@ public static class InvalidCommandArgumentsAnalyzer
             { Kind.Sub, null },
             { Kind.Xor, null },
             { Kind.EndIf, null },
-            { Kind.RamRead, new[] { Kind.String } },
-            { Kind.RamWrite, new[] { Kind.String } },
+            { Kind.RamRead, new object?[] { Kind.String } },
+            { Kind.RamWrite, new object?[] { Kind.String } },
             { Kind.ReadKey, null },
             { Kind.ReadLine, null },
-            { Kind.SetMark, new[] { Kind.String } },
+            { Kind.SetMark, new object?[] { Kind.String } },
             { Kind.SetPriority, null },
             { Kind.ShiftLeft, null },
+            { Kind.Mod, null },
             { Kind.ShiftRight, null },
             { Kind.ConvertToChar, null },
             { Kind.ConvertToDouble, null },
             { Kind.ConvertToInt, null },
             { Kind.ConvertToString, null },
+            { Kind.GetTimeInMilliseconds, null },
 
             { Kind.NewLine, null },
             { Kind.Whitespace, null }
         };
-    
+
     public static IEnumerable<SyntaxError> GetInvalidCommandArgumentsErrors(IReadOnlyList<Token> tokens)
     {
         var errors = new List<SyntaxError>();
@@ -81,18 +84,18 @@ public static class InvalidCommandArgumentsAnalyzer
                 continue;
             }
 
-            var temp = ValidCommandsArguments[token.TokenKind];
-            if (temp == null) continue;
-            var args = (object?[])temp;
+            var arguments = ValidCommandsArguments[token.TokenKind];
+            if (arguments == null) continue;
 
             var startIndex = index;
-            index = CheckMethodArguments(tokens, index, args, startIndex, errors, line);
+            index = CheckMethodArguments(tokens, index, arguments, startIndex, errors, line);
         }
 
         return errors;
     }
 
-    private static int CheckMethodArguments(IReadOnlyList<Token> tokens, int index, IReadOnlyList<object?> args, int startIndex,
+    private static int CheckMethodArguments(IReadOnlyList<Token> tokens, int index, IReadOnlyList<object?> args,
+        int startIndex,
         ICollection<SyntaxError> errors, int line)
     {
         for (++index; index < args.Count + startIndex + 1; index++)
