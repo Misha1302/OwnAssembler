@@ -11,11 +11,6 @@ A pseudo programming language similar to assembler
 - Платформа net core
 
 ---
-О синтаксисе:
-- в проекте есть файл "AsmEasyHighlight.xml"
-- если импортировать его в notepad++, то вы получите подсветку синтаксиса
-
----
 Аргументы ассемблера:
 - -codePath 	ПУТЬ
 - -compile 		true/false
@@ -51,47 +46,47 @@ A pseudo programming language similar to assembler
 
 ---
 Все команды доступные на версии v0.4 (регистр команд не важен):
-- add  
-- equals  
-- gt  
-- lt  
-- sub  
-- jmp  
-- clear  
-- gettimems  
-- copy  
-- setpriority  
-- nop  
-- exit  
-- converttostring  
-- converttoint  
-- converttodouble  
-- converttobool  
-- converttochar  
-- output  
-- readkey  
-- readline  
-- and  
-- or  
-- not  
-- xor  
-- dev  
-- mul  
-- shr  
-- shl  
-- push  
-- pop  
-- if  
-- else  
-- endif  
-- ramread  
-- ramwrite  
-- setmark  
-- goto  
-- call  
-- ret  
-- import  
+- add
+- equals
+- gt
+- lt
+- sub
+- jmp
+- clear
+- getTimeMs
+- copy
+- nop
+- exit
+- toStr
+- toInt
+- toDouble
+- toChar
+- output
+- readKey
+- readline
+- and
+- or
+- not
+- xor
+- dev
+- mul
+- shr
+- shl
+- mod
+- push
+- pop
+- if
+- else
+- endif
+- ramRead
+- ramWrite
+- setMark
+- goto
+- call
+- ret
+- import
 - invoke
+- #define
 
 ---
 Комментарии:
@@ -107,6 +102,24 @@ Debug mode:
 	 - 5 - номер команды
 	 - 0 - номер регистра
 	 - "Hello" - значение в регистре
+
+---
+О синтаксисе:
+- в проекте есть файл "AsmEasyHighlight.xml"
+- если импортировать его в notepad++, то вы получите подсветку синтаксиса
+- возможно, вам понравится сочетание подсветки с этими темами:
+  - vibrant ink
+  - bespin (brown - chocolate)
+  - black board (dark blue - black)
+  - choco (chocolate)
+  - DansLeRuSH-Dark (grey)
+  - HotFudgeDundae (red - chocolate)
+  - Mono Industrial (blue-green-grey)
+  - Obsidian (blue - grey)
+  - Solarized (blue - grey, and Consolas font)
+  - Twilight (black, and Consolas font)
+  - vim Dark Blue (blue, and Unknown font)
+---
 
 ---
 Мои контакты:

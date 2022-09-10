@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OwnAssembler.Assembler.FrontEnd;
 
@@ -71,8 +72,8 @@ public static class Preprocessor
         for (var i = 0; i < tokensInternal.Count; i++)
             if (tokensInternal[i].TokenKind == Kind.Define)
             {
-                var text = tokensInternal[i + 1].Text;
-                var lexer = new Lexer(tokensInternal[i + 2].Text);
+                var text = tokensInternal[i + 1].Text.ToLower();
+                var lexer = new Lexer(Regex.Unescape(tokensInternal[i + 2].Text));
                 var value = lexer.GetTokens();
                 tokensInternal.RemoveRange(i, 3);
 

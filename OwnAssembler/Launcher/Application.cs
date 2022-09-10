@@ -2,27 +2,25 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using Connector;
+using Cpu.CentralProcessingUnit;
 
-namespace Cpu.CentralProcessingUnit;
+namespace Launcher;
 
-public class CpuApplication
+public class Application
 {
-    private readonly int _applicationIndex;
     private readonly IReadOnlyList<ICommand> _commands;
     private readonly CpuStack _cpuStack;
     private readonly bool _debugMode;
 
     private int _commandIndex;
+    private bool _isKilled;
     private Stopwatch _stopwatch = new();
 
-    public int ApplicationPriority = 1;
-
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public CpuApplication(ByteCode byteCode, int applicationIndex, bool debugMode)
+    public Application(ByteCode byteCode, bool debugMode)
     {
         _commands = byteCode.Commands;
         _cpuStack = new CpuStack();
-        _applicationIndex = applicationIndex;
         _debugMode = debugMode;
     }
 
@@ -31,37 +29,31 @@ public class CpuApplication
     private void OnApplicationExit()
     {
         _stopwatch.Stop();
+        _isKilled = true;
 
         Console.WriteLine($"\nExecution time: {_stopwatch.ElapsedMilliseconds / 1000f} sec");
-        Cpu.KillApplication(_applicationIndex);
     }
 
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void OnApplicationStart()
+    private void OnApplicationStart()
     {
         _stopwatch = Stopwatch.StartNew();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void ApplicationTakeOneStep()
+    private void ApplicationTakeOneStep()
     {
-        for (var i = 0; i < ApplicationPriority; i++)
-        {
-            if (_debugMode) ApplicationTakeOneDebugStep(_commands);
-            else ApplicationTakeOneRealiseStep(_commands);
+        if (_debugMode) ApplicationTakeOneDebugStep(_commands);
+        else ApplicationTakeOneRealiseStep(_commands);
 
-            if (_commandIndex != -1) continue;
-
-            OnApplicationExit();
-            return;
-        }
+        if (_commandIndex == -1) OnApplicationExit();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private void ApplicationTakeOneRealiseStep(IReadOnlyList<ICommand> commands)
     {
-        commands[_commandIndex].Execute(_cpuStack, ref _commandIndex, _applicationIndex);
+        commands[_commandIndex].Execute(_cpuStack, ref _commandIndex);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
@@ -71,14 +63,11 @@ public class CpuApplication
 
         WriteLogs();
 
-        commands[_commandIndex].Execute(_cpuStack, ref _commandIndex, _applicationIndex);
+        commands[_commandIndex].Execute(_cpuStack, ref _commandIndex);
         Console.WriteLine();
     }
 
-    
-    
-    
-    
+
     private void WriteCommandDebug(IReadOnlyList<ICommand> commands)
     {
         commands[_commandIndex].Dump();
@@ -95,8 +84,8 @@ public class CpuApplication
         var stackLogString = new StringBuilder(512);
         var ramLogString = new StringBuilder(512);
 
-        stackLogString.Append($"{_applicationIndex}::{_commandIndex}".PadRight(7) + "| ");
-        ramLogString.Append($"{_applicationIndex}::{_commandIndex}".PadRight(7) + "| ");
+        stackLogString.Append($"{_commandIndex}".PadRight(7) + "| ");
+        ramLogString.Append($"{_commandIndex}".PadRight(7) + "| ");
 
         WriteStackLogs(stackLogString);
         WriteRamLogs(ramLogString);
@@ -124,5 +113,11 @@ public class CpuApplication
 
         using var fs = File.AppendText("stackLog.txt");
         fs.WriteLine(stackLogString);
+    }
+
+    public void Start()
+    {
+        OnApplicationStart();
+        while (!_isKilled) ApplicationTakeOneStep();
     }
 }

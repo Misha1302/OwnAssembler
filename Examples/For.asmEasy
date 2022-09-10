@@ -1,0 +1,63 @@
+; --- code ---;
+
+push 256
+ramWrite "to"
+push 0
+ramWrite "i"
+
+getTimeMs
+ramWrite "startTime"
+
+setMark "for"
+	ramRead "i"
+	ramRead "to"
+	lt not
+	
+	if push "outFor" goto endIf
+	
+	
+	call "print i"
+	call "add one to i"
+	
+	
+	push "for"
+	goto
+	
+setMark "outFor"
+
+
+push "Execution time: "
+
+getTimeMs
+ramRead "startTime"
+sub
+
+push "\n"
+
+push 3
+output 
+
+
+
+readkey
+
+
+
+exit
+
+; --- functions ---;
+
+setMark "print i"
+	ramRead "i"
+	push "\n"
+	push 2
+	output 
+ret
+
+
+setMark "add one to i"
+	ramRead "i"
+	push 1
+	add
+	ramWrite "i"
+ret

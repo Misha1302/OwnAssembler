@@ -6,7 +6,7 @@ namespace OwnAssembler.Assembler.FrontEnd;
 
 public class Lexer
 {
-    private static readonly IReadOnlyDictionary<string, Kind> Commands = new Dictionary<string, Kind>
+    private static readonly IReadOnlyDictionary<string, Kind> commands = new Dictionary<string, Kind>
     {
         { "add", Kind.Add },
         { "equals", Kind.Equals },
@@ -17,7 +17,6 @@ public class Lexer
         { "clear", Kind.Clear },
         { "getTimeMs", Kind.GetTimeInMilliseconds },
         { "copy", Kind.Copy },
-        { "setPriority", Kind.SetPriority },
         { "nop", Kind.Nop },
         { "exit", Kind.Exit },
 
@@ -70,7 +69,7 @@ public class Lexer
 
     static Lexer()
     {
-        Commands = Commands.Select(x => (x.Key.ToLower(), x.Value)).ToDictionary(x => x.Item1, x => x.Value);
+        commands = commands.Select(x => (x.Key.ToLower(), x.Value)).ToDictionary(x => x.Item1, x => x.Value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
@@ -98,9 +97,9 @@ public class Lexer
         UnityUnknownTokens(tokens);
 
         tokens = Preprocessor.PreprocessTokens(tokens);
-        
+
         tokens.RemoveAt(tokens.Count - 1); // delete eof
-        
+
         return tokens;
     }
 
@@ -141,7 +140,6 @@ public class Lexer
                     var endIndex = Regex.Match(_code[(_position + 1)..], "(?<!(\\\\))\"").Index + _position + 1;
                     var value = _code[(_position + 1)..endIndex];
                     _position += value.Length + 1;
-                    value = Regex.Unescape(value);
                     return new Token(Kind.String, value, value);
                 }
                 case '\'':
@@ -167,7 +165,7 @@ public class Lexer
             if (currentChar == '-' || char.IsNumber(currentChar))
                 return GetNextNumberToken();
 
-            foreach (var commandPair in Commands.Where(commandPair =>
+            foreach (var commandPair in commands.Where(commandPair =>
                          _code[_position..].IndexOf(commandPair.Key, StringComparison.Ordinal) == 0))
             {
                 if (_code.Length > _position + commandPair.Key.Length + 1)
@@ -204,16 +202,16 @@ public class Lexer
 
     private Token GetNextHexToken()
     {
-        const int numberBase = 16;
+        const int NUMBER_BASE = 16;
         var validCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-        return GetNextNumberToken(numberBase, validCharacters);
+        return GetNextNumberToken(NUMBER_BASE, validCharacters);
     }
 
     private Token GetNextBinaryToken()
     {
-        const int numberBase = 2;
+        const int NUMBER_BASE = 2;
         var validCharacters = new[] { '0', '1' };
-        return GetNextNumberToken(numberBase, validCharacters);
+        return GetNextNumberToken(NUMBER_BASE, validCharacters);
     }
 
     private Token GetNextNumberToken(int numberBase, char[] validCharacters)
@@ -235,9 +233,9 @@ public class Lexer
 
     private Token GetNextDecimalToken()
     {
-        const int numberBase = 10;
+        const int NUMBER_BASE = 10;
         var validCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-        return GetNextNumberToken(numberBase, validCharacters);
+        return GetNextNumberToken(NUMBER_BASE, validCharacters);
     }
 }
 

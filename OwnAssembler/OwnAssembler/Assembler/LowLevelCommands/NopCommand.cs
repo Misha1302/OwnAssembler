@@ -5,7 +5,7 @@ namespace OwnAssembler.Assembler.LowLevelCommands;
 [Serializable]
 public class NopCommand : ICommand
 {
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         currentCommandIndex++;
     }

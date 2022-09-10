@@ -4,7 +4,7 @@ namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 
 public static class InvalidLinkedWordsAnalyzer
 {
-    private static readonly IReadOnlyList<(Kind start, Kind end)> LinkingWords = new List<(Kind start, Kind end)>
+    private static readonly IReadOnlyList<(Kind start, Kind end)> linkingWords = new List<(Kind start, Kind end)>
     {
         (Kind.If, Kind.EndIf)
     };
@@ -13,11 +13,11 @@ public static class InvalidLinkedWordsAnalyzer
     {
         var errors = new List<SyntaxError>();
 
-        var linkingWordsStart = LinkingWords.Select(x => x.start).ToArray();
-        var linkingWordsEnd = LinkingWords.Select(x => x.end).ToArray();
+        var linkingWordsStart = linkingWords.Select(x => x.start).ToArray();
+        var linkingWordsEnd = linkingWords.Select(x => x.end).ToArray();
 
-        const int line = 0;
-        CheckForLinkedWordsInternal(tokens, line, linkingWordsStart, linkingWordsEnd, errors);
+        const int LINE = 0;
+        CheckForLinkedWordsInternal(tokens, LINE, linkingWordsStart, linkingWordsEnd, errors);
         
         return errors;
     }

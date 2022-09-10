@@ -6,7 +6,7 @@ namespace Cpu.CentralProcessingUnit;
 
 public static class Cpu
 {
-    public static readonly Dictionary<int, CpuApplication> Applications = new();
+    public static readonly Dictionary<int, Application> Applications = new();
     private static int _applicationIndex;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]

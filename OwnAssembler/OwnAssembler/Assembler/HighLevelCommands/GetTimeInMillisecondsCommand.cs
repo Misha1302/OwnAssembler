@@ -7,7 +7,7 @@ namespace OwnAssembler.Assembler.HighLevelCommands;
 public class GetTimeInMillisecondsCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         stack.Push(DateTimeOffset.Now.ToUnixTimeMilliseconds());
         currentCommandIndex++;

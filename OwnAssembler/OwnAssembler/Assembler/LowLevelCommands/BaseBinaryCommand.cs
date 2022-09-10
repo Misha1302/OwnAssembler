@@ -15,7 +15,7 @@ public abstract class BaseBinaryCommand : ICommand
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         var a = stack.Pop()!;
         var b = stack.Pop()!;

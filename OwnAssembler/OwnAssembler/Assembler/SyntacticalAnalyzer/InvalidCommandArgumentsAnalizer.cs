@@ -4,7 +4,7 @@ namespace OwnAssembler.Assembler.SyntacticalAnalyzer;
 
 public static class InvalidCommandArgumentsAnalyzer
 {
-    private static readonly IReadOnlyList<Kind> ArgumentTypes = new List<Kind>
+    private static readonly IReadOnlyList<Kind> argumentTypes = new List<Kind>
     {
         Kind.String,
         Kind.Int,
@@ -18,7 +18,7 @@ public static class InvalidCommandArgumentsAnalyzer
     ///     Arguments are passed as Kind[] and the type of the argument (string, number, etc.). <br />
     ///     If the command is followed by an argument of any type, then instead of the type, you can put the Null value <br />
     /// </summary>
-    private static readonly IReadOnlyDictionary<Kind, object?[]?> ValidCommandsArguments =
+    private static readonly IReadOnlyDictionary<Kind, object?[]?> validCommandsArguments =
         new Dictionary<Kind, object?[]?>
         {
             { Kind.Define, new object?[] { Kind.String, Kind.String } },
@@ -54,7 +54,6 @@ public static class InvalidCommandArgumentsAnalyzer
             { Kind.ReadKey, null },
             { Kind.ReadLine, null },
             { Kind.SetMark, new object?[] { Kind.String } },
-            { Kind.SetPriority, null },
             { Kind.ShiftLeft, null },
             { Kind.Mod, null },
             { Kind.ShiftRight, null },
@@ -71,20 +70,20 @@ public static class InvalidCommandArgumentsAnalyzer
     public static IEnumerable<SyntaxError> GetInvalidCommandArgumentsErrors(IReadOnlyList<Token> tokens)
     {
         var errors = new List<SyntaxError>();
-        var line = 0;
+        var line = 1;
 
         for (var index = 0; index < tokens.Count; index++)
         {
             var token = tokens[index];
             if (token.TokenKind == Kind.NewLine) line++;
 
-            if (!ValidCommandsArguments.ContainsKey(token.TokenKind))
+            if (!validCommandsArguments.ContainsKey(token.TokenKind))
             {
                 errors.Add(new SyntaxError($"{line}. Unknown token t:{token.Text} k:{token.TokenKind}"));
                 continue;
             }
 
-            var arguments = ValidCommandsArguments[token.TokenKind];
+            var arguments = validCommandsArguments[token.TokenKind];
             if (arguments == null) continue;
 
             var startIndex = index;
@@ -111,7 +110,7 @@ public static class InvalidCommandArgumentsAnalyzer
             var argType = args[argumentIndex];
             if (argType == null)
             {
-                if (!ArgumentTypes.Contains(arg.TokenKind))
+                if (!argumentTypes.Contains(arg.TokenKind))
                     errors.Add(
                         new SyntaxError($"{line}. Argument number {argumentIndex} must be of type {argType ?? "\"any\""}"));
 

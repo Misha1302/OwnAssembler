@@ -16,7 +16,7 @@ public class GotoCommand : ICommand
 
     // ReSharper disable once RedundantAssignment
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         var gotoMark = (string)stack.Pop()!;
         var gotoPos = _commands.FindIndex(x => (x as GotoMark)?.MarkName == gotoMark);

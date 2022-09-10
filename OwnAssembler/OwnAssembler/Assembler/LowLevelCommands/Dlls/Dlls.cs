@@ -5,29 +5,29 @@ namespace OwnAssembler.Assembler.LowLevelCommands.Dlls;
 
 public static class Dlls
 {
-    private const string NamespaceName = "AssemblerDllNamespace";
-    private const string ClassName = "AssemblerDllClass";
+    private const string NAMESPACE_NAME = "AssemblerDllNamespace";
+    private const string CLASS_NAME = "AssemblerDllClass";
 
-    private static readonly Dictionary<string, Assembly> DllsDictionary = new();
-    private static readonly Dictionary<string, Type> Classes = new();
+    private static readonly Dictionary<string, Assembly> dllsDictionary = new();
+    private static readonly Dictionary<string, Type> classes = new();
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void AddDll(string dllPath)
     {
-        DllsDictionary.Add(dllPath, Assembly.LoadFrom(dllPath));
+        dllsDictionary.Add(dllPath, Assembly.LoadFrom(dllPath));
 
-        var classType = DllsDictionary[dllPath].GetType($"{NamespaceName}.{ClassName}") ??
-                        throw new Exception($"{ClassName} not found");
+        var classType = dllsDictionary[dllPath].GetType($"{NAMESPACE_NAME}.{CLASS_NAME}") ??
+                        throw new Exception($"{CLASS_NAME} not found");
 
-        Classes.Add(dllPath, classType);
+        classes.Add(dllPath, classType);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static MethodInfo GetMethodFromDll(string dllPath, string methodName)
     {
-        var method = Classes[dllPath].GetMethod(methodName) ??
+        var method = classes[dllPath].GetMethod(methodName) ??
                      throw new Exception(
-                         $"method: <{methodName}> in class: <{ClassName}> in dll: <{dllPath}> not found");
+                         $"method: <{methodName}> in class: <{CLASS_NAME}> in dll: <{dllPath}> not found");
         return method;
     }
 }

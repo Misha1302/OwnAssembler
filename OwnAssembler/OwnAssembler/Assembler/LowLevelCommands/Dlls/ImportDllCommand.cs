@@ -7,7 +7,7 @@ namespace OwnAssembler.Assembler.LowLevelCommands.Dlls;
 public class ImportDllCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         Dlls.AddDll((string)stack.Pop()!);
         currentCommandIndex++;

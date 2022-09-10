@@ -1,10 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Soap;
 using Connector;
 using OwnAssembler.Assembler;
 using OwnAssembler.Assembler.FrontEnd;
 using OwnAssembler.Assembler.SyntacticalAnalyzer;
-using Processor = Cpu.CentralProcessingUnit.Cpu;
 
 namespace OwnAssembler;
 
@@ -33,12 +33,17 @@ public static class Compiler
             CompilerToBytecode.Compile(commands, tokens);
             SerializeByteCode(byteCodeSave, byteCode);
         }
-        else
-        {
-            DeserializeByteCode(byteCodeRead, out byteCode);
-        }
 
-        Processor.StartNewApplication(byteCode, debugMode);
+        var allText = File.ReadAllText("C:\\Users\\Public\\Launcher.url");
+        var index = allText.IndexOf("URL=", StringComparison.Ordinal) + 4;
+        var length = allText.IndexOf(".exe", StringComparison.Ordinal) + 4;
+        var fileName = allText[index..length];
+
+        var launcher = new Process();
+        launcher.StartInfo.FileName = fileName;
+        launcher.StartInfo.Arguments = $"-debug {debugMode} -bytecoderead \"{byteCodeRead}\"";
+        launcher.StartInfo.UseShellExecute = true;
+        launcher.Start();
     }
 
     private static bool CheckForSyntaxErrors(IReadOnlyList<Token> tokens)
@@ -69,15 +74,22 @@ public static class Compiler
         {
             ("-compile", true),
             ("-debug", false),
-            ("-codepath", "Code.asmEasy"),
-            ("-bytecoderead", "byteCode.dat"),
-            ("-bytecodesave", "byteCode.dat")
+            ("-codepath", $"{Directory.GetCurrentDirectory()}\\Code.asmEasy"),
+            ("-bytecoderead", $"{Directory.GetCurrentDirectory()}\\byteCode.abcf"),
+            ("-bytecodesave", $"{Directory.GetCurrentDirectory()}\\byteCode.abcf")
         };
 
         var booleanParameters = new[]
         {
             "-compile",
             "-debug"
+        };
+
+        var pathParameters = new[]
+        {
+            "-bytecoderead",
+            "-bytecodesave",
+            "-codepath"
         };
 
         for (var index = 0; index < args.Count - 1; index++)
@@ -87,6 +99,13 @@ public static class Compiler
             index++;
 
             object value = !booleanParameters.Contains(arg) ? args[index] : args[index].ToLower() == "true";
+            if (pathParameters.Contains(arg))
+            {
+                var str = value as string ?? throw new Exception("Parameter is not a path (string)");
+                if (str[1] != ':') str = Directory.GetCurrentDirectory() + "\\" + str;
+                value = str;
+            }
+
             parameters.Add(arg, value);
         }
 
@@ -98,22 +117,12 @@ public static class Compiler
 
 
     // there is no point in worrying about security in this context
-#pragma warning disable SYSLIB0011
-#warning if you need the security of the stored bytecode, then don't forget to change the serialization and deserialization
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private static void SerializeByteCode(string byteCodePath, ByteCode byteCode)
     {
-        var binaryFormatter = new BinaryFormatter();
+        var binaryFormatter = new SoapFormatter();
+        File.WriteAllText(byteCodePath, "");
         using var fs = new FileStream(byteCodePath, FileMode.OpenOrCreate);
         binaryFormatter.Serialize(fs, byteCode);
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    private static void DeserializeByteCode(string byteCodePath, out ByteCode byteCode)
-    {
-        var binaryFormatter = new BinaryFormatter();
-        using var fs = new FileStream(byteCodePath, FileMode.Open);
-        byteCode = (ByteCode)binaryFormatter.Deserialize(fs);
-    }
-#pragma warning restore SYSLIB0011
 }

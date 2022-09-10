@@ -91,10 +91,6 @@ public static class CompilerToBytecode
                         commands.Add(new GetTimeInMillisecondsCommand());
                         index++;
                         break;
-                    case Kind.SetPriority:
-                        commands.Add(new SetApplicationPriorityCommand());
-                        index++;
-                        break;
                     case Kind.Nop:
                         commands.Add(new NopCommand());
                         index++;

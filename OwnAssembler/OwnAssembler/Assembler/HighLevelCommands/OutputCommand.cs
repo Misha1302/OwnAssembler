@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using Connector;
 
 namespace OwnAssembler.Assembler.HighLevelCommands;
@@ -9,7 +10,7 @@ namespace OwnAssembler.Assembler.HighLevelCommands;
 public class OutputCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         var length = (int)stack.Pop()!;
         var stringBuilder = new StringBuilder(512);
@@ -21,7 +22,7 @@ public class OutputCommand : ICommand
 
         foreach (var item in list.ToArray().Reverse().Select(x => x?.ToString())) stringBuilder.Append(item);
 
-        Console.Write(stringBuilder.ToString());
+        Console.Write(Regex.Unescape(stringBuilder.ToString()));
         currentCommandIndex++;
     }
 

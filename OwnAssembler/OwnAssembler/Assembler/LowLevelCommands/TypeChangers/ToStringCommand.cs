@@ -7,7 +7,7 @@ namespace OwnAssembler.Assembler.LowLevelCommands.TypeChangers;
 public class ToStringCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         var value = stack.Pop();
         if (value is double d) value = d.ToString("0." + new string('#', 324));

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
@@ -11,7 +11,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Connector\Connector.csproj" />
-        <ProjectReference Include="..\Cpu\Cpu.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="SoapFormatter">
+        <HintPath>C:\Users\Misha\.nuget\packages\soapformatter\1.1.9\lib\netstandard2.0\SoapFormatter.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

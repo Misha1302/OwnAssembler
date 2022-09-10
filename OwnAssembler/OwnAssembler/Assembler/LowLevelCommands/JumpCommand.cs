@@ -7,7 +7,7 @@ namespace OwnAssembler.Assembler.LowLevelCommands;
 public class JumpCommand : ICommand
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         currentCommandIndex += (int)(stack.Pop() ?? throw new TypeAccessException("Jump only works with int values"));
     }

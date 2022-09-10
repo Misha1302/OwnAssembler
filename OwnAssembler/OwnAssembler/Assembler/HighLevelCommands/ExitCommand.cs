@@ -10,7 +10,7 @@ public class ExitCommand : ICommand
     // We can't make this method static
 #pragma warning disable CA1822
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public void Execute(CpuStack stack, ref int currentCommandIndex, int applicationIndex)
+    public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         currentCommandIndex = -1;
     }

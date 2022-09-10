@@ -13,7 +13,6 @@ public enum Kind
     Clear,
     GetTimeInMilliseconds,
     Copy,
-    SetPriority,
     Nop,
     Exit,
 
