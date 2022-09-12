@@ -94,7 +94,7 @@ public class Lexer
             tokens.Add(token);
         }
 
-        UnityUnknownTokens(tokens);
+        ConnectUnknownTokens(tokens);
 
         tokens = Preprocessor.PreprocessTokens(tokens);
 
@@ -103,7 +103,7 @@ public class Lexer
         return tokens;
     }
 
-    private static void UnityUnknownTokens(IList<Token> tokens)
+    private static void ConnectUnknownTokens(IList<Token> tokens)
     {
         for (var i = 0; i < tokens.Count; i++)
         {
@@ -137,9 +137,10 @@ public class Lexer
             {
                 case '"':
                 {
-                    var endIndex = Regex.Match(_code[(_position + 1)..], "(?<!(\\\\))\"").Index + _position + 1;
-                    var value = _code[(_position + 1)..endIndex];
-                    _position += value.Length + 1;
+                    _position++;
+                    var endIndex = Regex.Match(_code[_position..], "(?<!(\\\\))\"").Index + _position;
+                    var value = _code[_position..endIndex];
+                    _position += value.Length;
                     return new Token(Kind.String, value, value);
                 }
                 case '\'':

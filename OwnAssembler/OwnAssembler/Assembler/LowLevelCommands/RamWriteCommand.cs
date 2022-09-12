@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Connector;
-using Cpu.CentralProcessingUnit;
 
 namespace OwnAssembler.Assembler.LowLevelCommands;
 

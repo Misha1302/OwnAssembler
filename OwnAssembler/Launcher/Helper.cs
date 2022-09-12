@@ -7,6 +7,26 @@ namespace Launcher;
 
 public static class Helper
 {
+    public static bool CreateLnk()
+    {
+        const string PATH = "C:\\Users\\Public\\Launcher.url";
+        var app = Environment.ProcessPath;
+        if (app == null) return false;
+
+        File.WriteAllText(PATH, "");
+
+        using var writer = new StreamWriter(PATH);
+
+        writer.WriteLine("[InternetShortcut]");
+        writer.WriteLine("URL=file:///" + app);
+        writer.WriteLine("IconIndex=0");
+        var icon = app.Replace('\\', '/');
+        writer.WriteLine("IconFile=" + icon);
+        writer.Flush();
+
+        return true;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void DeserializeByteCode(string byteCodePath, out ByteCode byteCode)
     {
@@ -25,31 +45,22 @@ public static class Helper
 
     public static Dictionary<string, object> GetParameters(IReadOnlyList<string> args)
     {
-        var parameters = new Dictionary<string, object>();
-
         var defaultParameters = new (string key, object value)[]
         {
             ("-debug", false),
+            ("-exitwhenfinished", true),
             ("-bytecoderead", "byteCode.abcf") // assembler byte code file
         };
 
         var booleanParameters = new[]
         {
-            "-debug"
+            "-debug",
+            "-exitwhenfinished"
         };
 
-        for (var index = 0; index < args.Count - 1; index++)
-        {
-            var arg = args[index].ToLower();
+        var pathParameters = Array.Empty<string>();
 
-            index++;
-
-            object value = !booleanParameters.Contains(arg) ? args[index] : args[index].ToLower() == "true";
-            parameters.Add(arg, value);
-        }
-
-        foreach (var pair in defaultParameters.Where(pair => !parameters.ContainsKey(pair.key)))
-            parameters.Add(pair.key, pair.value);
+        var parameters = ArgumentsParser.GetParameters(args, defaultParameters, booleanParameters, pathParameters);
 
         return parameters;
     }

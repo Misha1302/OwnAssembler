@@ -1,13 +1,20 @@
 ﻿using System.Text;
 
-namespace Cpu.CentralProcessingUnit;
+namespace Launcher;
 
 public static class StringExtension
 {
     public static string ToLiteral(this string input)
     {
-        var literal = new StringBuilder(input.Length + 2);
-        literal.Append('"');
+        var literal = new StringBuilder(input.Length * 2);
+
+        ToLiteralInternal(input, literal);
+
+        return literal.ToString();
+    }
+
+    private static void ToLiteralInternal(string input, StringBuilder literal)
+    {
         foreach (var c in input)
             switch (c)
             {
@@ -56,8 +63,5 @@ public static class StringExtension
 
                     break;
             }
-
-        literal.Append('"');
-        return literal.ToString();
     }
 }

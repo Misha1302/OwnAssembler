@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Connector;
-using Cpu.CentralProcessingUnit;
 
 namespace Launcher;
 
@@ -11,27 +9,33 @@ public class Application
     private readonly IReadOnlyList<ICommand> _commands;
     private readonly CpuStack _cpuStack;
     private readonly bool _debugMode;
+    private readonly bool _exitWhenFinished;
 
     private int _commandIndex;
-    private bool _isKilled;
-    private Stopwatch _stopwatch = new();
+    private bool _isExited;
+    private Stopwatch? _stopwatch;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public Application(ByteCode byteCode, bool debugMode)
+    public Application(ByteCode byteCode, bool debugMode, bool exitWhenFinished, Stopwatch? stopwatch = null)
     {
-        _commands = byteCode.Commands;
         _cpuStack = new CpuStack();
+
+        _commands = byteCode.Commands;
         _debugMode = debugMode;
+        _exitWhenFinished = exitWhenFinished;
+
+        if (stopwatch != null) _stopwatch = stopwatch;
     }
 
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     private void OnApplicationExit()
     {
-        _stopwatch.Stop();
-        _isKilled = true;
+        _stopwatch?.Stop();
+        _isExited = true;
 
-        Console.WriteLine($"\nExecution time: {_stopwatch.ElapsedMilliseconds / 1000f} sec");
+        Console.WriteLine($"\nExecution time: {_stopwatch?.ElapsedMilliseconds / 1000f} sec");
+        if (!_exitWhenFinished) Console.ReadKey();
     }
 
 
@@ -61,7 +65,7 @@ public class Application
     {
         WriteCommandDebug(commands);
 
-        WriteLogs();
+        Logger.WriteLogs(_commandIndex, _cpuStack);
 
         commands[_commandIndex].Execute(_cpuStack, ref _commandIndex);
         Console.WriteLine();
@@ -77,47 +81,9 @@ public class Application
         Console.Write(" | ");
     }
 
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    private void WriteLogs()
-    {
-        var stackLogString = new StringBuilder(512);
-        var ramLogString = new StringBuilder(512);
-
-        stackLogString.Append($"{_commandIndex}".PadRight(7) + "| ");
-        ramLogString.Append($"{_commandIndex}".PadRight(7) + "| ");
-
-        WriteStackLogs(stackLogString);
-        WriteRamLogs(ramLogString);
-    }
-
-    private static void WriteRamLogs(StringBuilder ramLogString)
-    {
-        foreach (var pair in Ram.RamDictionary)
-        {
-            var value = ((pair.Value ?? "null").ToString() ?? string.Empty).ToLiteral();
-            ramLogString.Append($"{pair.Key}: {value}::{pair.Value?.GetType().Name}".PadRight(20) + " ");
-        }
-
-        using var fs = File.AppendText("ramLog.txt");
-        fs.WriteLine(ramLogString);
-    }
-
-    private void WriteStackLogs(StringBuilder stackLogString)
-    {
-        for (var i = 0; i < _cpuStack.Count; i++)
-        {
-            var value = ((_cpuStack[i] ?? "null").ToString() ?? string.Empty).ToLiteral();
-            stackLogString.Append($"{i}: {value}::{_cpuStack[i]?.GetType().Name}".PadRight(20) + " ");
-        }
-
-        using var fs = File.AppendText("stackLog.txt");
-        fs.WriteLine(stackLogString);
-    }
-
     public void Start()
     {
         OnApplicationStart();
-        while (!_isKilled) ApplicationTakeOneStep();
+        while (!_isExited) ApplicationTakeOneStep();
     }
 }

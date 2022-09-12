@@ -15,6 +15,7 @@ public static class Preprocessor
     {
         var timeNow0 = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
         var timeNow1 = (DateTimeOffset.Now.ToUnixTimeMilliseconds() + 1).ToString();
+
         code = code.Replace("\\\"", timeNow0);
         code = code.Replace("\\'", timeNow1);
 
@@ -53,15 +54,16 @@ public static class Preprocessor
     }
 
     /// <summary>
-    ///     executes preprocessor directives<br />
-    ///     note: spaces are not preserved
+    ///     executes preprocessor directives
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
-    public static List<Token> PreprocessTokens(IEnumerable<Token> tokens)
+    public static List<Token> PreprocessTokens(IEnumerable<Token> tokens, bool removeWhitespaces = true)
     {
         var tokensInternal = new List<Token>(tokens);
-        tokensInternal.RemoveAll(token1 => token1.TokenKind == Kind.Whitespace);
-        
+
+        if (removeWhitespaces)
+            tokensInternal.RemoveAll(token1 => token1.TokenKind == Kind.Whitespace);
+
         ReplaceDefine(tokensInternal);
 
         return tokensInternal;

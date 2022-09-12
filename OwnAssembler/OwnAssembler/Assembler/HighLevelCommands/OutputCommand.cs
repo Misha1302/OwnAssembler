@@ -13,7 +13,7 @@ public class OutputCommand : ICommand
     public void Execute(CpuStack stack, ref int currentCommandIndex)
     {
         var length = (int)stack.Pop()!;
-        var stringBuilder = new StringBuilder(512);
+        var stringBuilder = new StringBuilder(32);
         var list = new ArrayList(length);
 
         var count = stack.Count;

@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Cpu.CentralProcessingUnit;
+namespace Connector;
 
-// heap analogue
+
 public static class Ram
 {
     public static readonly Dictionary<string, object?> RamDictionary = new();
